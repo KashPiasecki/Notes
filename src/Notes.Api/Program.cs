@@ -5,12 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ServiceCollection
 var services = builder.Services;
+var notesConfiguration = services.AddConfigurations(builder.Configuration);
 services.AddControllers();
-services.AddSwaggerGenerator();
+services.AddSwagger(notesConfiguration.Swagger);
 
 // WebApplication
 var app = builder.Build();
-app.UseSwagger();
+app.UseSwagger(notesConfiguration.Swagger);
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
