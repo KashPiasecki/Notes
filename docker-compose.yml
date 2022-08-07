@@ -1,0 +1,27 @@
+version: "3.9"
+
+secrets:
+  postgres_user:
+    file: ./postgres_user.txt
+  postgres_password:
+    file: ./postgres_password.txt
+
+services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    secrets:                  
+      - postgres_password
+      - postgres_user
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: NotesDb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
