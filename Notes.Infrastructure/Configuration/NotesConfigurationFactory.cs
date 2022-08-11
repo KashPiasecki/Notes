@@ -1,4 +1,6 @@
-namespace Notes.Api.Configuration;
+using Microsoft.Extensions.Configuration;
+
+namespace Notes.Infrastructure.Configuration;
 
 public static class NotesConfigurationFactory
 {

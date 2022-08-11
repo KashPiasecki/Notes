@@ -1,4 +1,4 @@
-namespace Notes.Api.Utility;
+namespace Notes.Infrastructure.Utility;
 
 public static class AssemblyLoader
 {

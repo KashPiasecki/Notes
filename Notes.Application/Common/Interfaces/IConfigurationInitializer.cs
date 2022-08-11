@@ -1,4 +1,4 @@
-namespace Notes.Api.Configuration;
+namespace Notes.Application.Common.Interfaces;
 
 public interface IConfigurationInitializer
 {

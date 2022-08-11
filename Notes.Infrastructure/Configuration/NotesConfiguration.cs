@@ -1,4 +1,4 @@
-namespace Notes.Api.Configuration;
+namespace Notes.Infrastructure.Configuration;
 
 public class NotesConfiguration
 {

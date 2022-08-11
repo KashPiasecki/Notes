@@ -1,4 +1,4 @@
-using Notes.Api.ProgramExtensions;
+using Notes.Infrastructure.ProgramExtensions;
 
 // WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);

@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Notes.Api.Configuration;
+using Notes.Infrastructure.Configuration;
 
-namespace Notes.Api.ProgramExtensions;
+namespace Notes.Infrastructure.ProgramExtensions;
 
 public static class SwaggerExtension
 {

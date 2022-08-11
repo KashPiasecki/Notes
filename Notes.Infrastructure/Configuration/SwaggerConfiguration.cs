@@ -1,6 +1,6 @@
-using Notes.Api.ProgramExtensions;
+using Notes.Application.Common.Interfaces;
 
-namespace Notes.Api.Configuration;
+namespace Notes.Infrastructure.Configuration;
 
 public class SwaggerConfiguration : IConfigurationInitializer
 {
