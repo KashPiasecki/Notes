@@ -1,9 +1,12 @@
-using Notes.Api.Configuration;
-using Notes.Api.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Notes.Application.Common.Interfaces;
+using Notes.Infrastructure.Configuration;
+using Notes.Infrastructure.Utility;
 
-namespace Notes.Api.ProgramExtensions;
+namespace Notes.Infrastructure.ProgramExtensions;
 
-public static class ConfigurationExtension
+public static class ConfigurationExtensions
 {
     private const string SectionName = "NotesConfiguration";
     
@@ -16,7 +19,7 @@ public static class ConfigurationExtension
 
     private static void RegisterSubConfigurations(IServiceCollection serviceCollection)
     {
-        var configurationCollection = AssemblyLoader.GetTypes<IConfigurationInitializer>();
+        var configurationCollection = AssemblyLoader.GetTypes<IConfigurationInitialize>();
         foreach (var configuration in configurationCollection)   
         {
             serviceCollection.AddSingleton(configuration);

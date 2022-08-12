@@ -5,7 +5,7 @@ using Notes.Infrastructure.Configuration;
 
 namespace Notes.Infrastructure.ProgramExtensions;
 
-public static class SwaggerExtension
+public static class SwaggerExtensions
 {
     public static void AddSwagger(this IServiceCollection serviceCollection, SwaggerConfiguration swaggerConfiguration)
     {

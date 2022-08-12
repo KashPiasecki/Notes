@@ -7,10 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var notesConfiguration = services.AddConfigurations(builder.Configuration);
 services.AddControllers();
+services.AddPostgresDatabase(notesConfiguration.Database);
 services.AddSwagger(notesConfiguration.Swagger);
 
 // WebApplication
-var app = builder.Build();
+var app = builder.Build(); 
+app.MigrateDatabase();
 app.UseSwagger(notesConfiguration.Swagger);
 app.UseHttpsRedirection();
 app.UseAuthorization();
