@@ -4,9 +4,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Api", "src\Notes.Api\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Domain", "src\Notes.Domain\Notes.Domain.csproj", "{B1667B8B-6431-4D6A-AAC0-680CC5F56912}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Infrastructure", "Notes.Infrastructure\Notes.Infrastructure.csproj", "{E6F4D730-165D-44E0-A0E3-367AD0ED8866}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Infrastructure", "src\Notes.Infrastructure\Notes.Infrastructure.csproj", "{E6F4D730-165D-44E0-A0E3-367AD0ED8866}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Application", "Notes.Application\Notes.Application.csproj", "{129D9FE1-51E5-45DB-9019-12C31D76009B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.Application", "src\Notes.Application\Notes.Application.csproj", "{129D9FE1-51E5-45DB-9019-12C31D76009B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

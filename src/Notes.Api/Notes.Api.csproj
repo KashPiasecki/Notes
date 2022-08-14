@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Notes.Application\Notes.Application.csproj" />
-      <ProjectReference Include="..\..\Notes.Infrastructure\Notes.Infrastructure.csproj" />
+      <ProjectReference Include="..\Notes.Application\Notes.Application.csproj" />
+      <ProjectReference Include="..\Notes.Infrastructure\Notes.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
