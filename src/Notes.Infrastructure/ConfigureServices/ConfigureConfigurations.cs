@@ -4,9 +4,9 @@ using Notes.Application.Common.Interfaces;
 using Notes.Infrastructure.Configuration;
 using Notes.Infrastructure.Utility;
 
-namespace Notes.Infrastructure.ProgramExtensions;
+namespace Notes.Infrastructure.ConfigureServices;
 
-public static class ConfigurationExtensions
+public static class ConfigureConfigurations
 {
     private const string SectionName = "NotesConfiguration";
     

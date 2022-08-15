@@ -1,13 +1,14 @@
 # About #
-### This project was created to try out many different technologies and new <b>StandardApi</b> approach with <b>.NET 6</b>. Planning to use: ###
+### This project was created to try out many different technologies and <b>StandardApi</b> approach with <b>.NET 6</b>. Planning to use: ###
 * Serilog
-* Kibana/Seq for logging mechanism
+* Kibana/Seq for logging platform
 * Docker contenerization
 * EntityFramework Core
 * Postgres SQL
+* CQRS with MediatR 
 * JWT Authorization
-* Roles,Claims
-* Docker contenerization
+* Roles, Claims
+* Unit tests
 * Integrated tests
 * Automapper
 * FluentValidation
@@ -18,8 +19,8 @@
 * Filtering
 * CI/CD with GitHub actions
 # How to run # 
-Need to create 2 files in the main directory with content to run Postgres in docker-compose. Schema: filename-content
+Create 2 files in the main directory with content to run Postgres in docker-compose. Schema: filename-content
 * `postgres_password.txt-<YOUR_PASSWORD>`
 * `postgres_user.txt-<YOUR_USERNAME>`
 
-Afterwards run $docker-compose up
+Afterwards run in cmd $docker-compose up

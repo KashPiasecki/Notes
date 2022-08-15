@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Notes.Infrastructure.Configuration;
 
-namespace Notes.Infrastructure.ProgramExtensions;
+namespace Notes.Infrastructure.ConfigureServices;
 
-public static class SwaggerExtensions
+public static class ConfigureSwagger
 {
     public static void AddSwagger(this IServiceCollection serviceCollection, SwaggerConfiguration swaggerConfiguration)
     {
