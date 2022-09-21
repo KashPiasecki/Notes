@@ -1,15 +1,18 @@
-using MediatR;
-using Notes.Application.CQRS;
+using Notes.Application.ConfigureServices;
 using Notes.Infrastructure.ConfigureServices;
 
 // WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);
 
-// ServiceCollection
+// ServiceCollection - Api
 var services = builder.Services;
 var notesConfiguration = services.AddConfigurations(builder.Configuration);
 services.AddControllers();
-services.AddMediatR(typeof(BaseHandler).Assembly);
+
+// ServiceCollection - Application
+services.AddMediatR();
+
+// ServiceCollection - Infrastructure
 services.AddPostgresDatabase(notesConfiguration.Database);
 services.AddSwagger(notesConfiguration.Swagger);
 

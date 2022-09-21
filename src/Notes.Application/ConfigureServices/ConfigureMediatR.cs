@@ -1,9 +1,13 @@
+using System.Reflection;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Notes.Application.ConfigureServices;
 
 public static class MediatrExtension
 {
-    // public static void AddMediatR(this IServiceCollection serviceCollection)
-    // {
-    //     serviceCollection.AddMediatR(Assembly.GetExecutingAssembly());
-    // }
+    public static void AddMediatR(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddMediatR(Assembly.GetExecutingAssembly());
+    }
 }
