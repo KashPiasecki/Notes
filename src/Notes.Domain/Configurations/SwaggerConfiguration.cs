@@ -1,8 +1,6 @@
-using Notes.Application.Common.Interfaces;
+namespace Notes.Domain.Configurations;
 
-namespace Notes.Infrastructure.Configuration;
-
-public class SwaggerConfiguration : IConfigurationInitialize
+public class SwaggerConfiguration
 {
     public string Name { get; init; }
     public string Version { get; init; }

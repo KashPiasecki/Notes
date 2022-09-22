@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Notes.Application.Common.Interfaces;
-using Notes.Infrastructure.Configuration;
+using Notes.Domain.Configurations;
 using Notes.Infrastructure.Persistence;
 
 namespace Notes.Infrastructure.ConfigureServices;
