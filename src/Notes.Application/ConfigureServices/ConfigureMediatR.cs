@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Notes.Application.ConfigureServices;
 
-public static class MediatrExtension
+public static class ConfigureMediatR
 {
     public static void AddMediatR(this IServiceCollection serviceCollection)
     {

@@ -2,7 +2,7 @@ using Notes.Application.Common.Interfaces;
 
 namespace Notes.Application.CQRS;
 
-public class BaseHandler
+public abstract class BaseHandler
 {
     protected readonly IDataContext DataContext;
 

@@ -1,4 +1,6 @@
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;
@@ -12,6 +14,7 @@ namespace Notes.Api.Controllers;
 
 [ApiController]
 [Route($"{ApiRoutes.Base}/[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class NotesController : ControllerBase
 {
     private readonly IMediator _mediator;

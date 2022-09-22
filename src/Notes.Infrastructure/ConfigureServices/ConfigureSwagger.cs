@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Notes.Infrastructure.Configuration;
+using Notes.Domain.Configurations;
 
 namespace Notes.Infrastructure.ConfigureServices;
 
@@ -20,6 +20,13 @@ public static class ConfigureSwagger
                     Name = swaggerConfiguration.Developer,
                     Email = swaggerConfiguration.Email
                 }
+            });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the bearer scheme",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
             });
         });
     }
