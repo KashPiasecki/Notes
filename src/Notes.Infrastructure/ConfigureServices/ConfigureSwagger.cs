@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Notes.Domain.Configurations;
 
-namespace Notes.Infrastructure.ConfigureServices.Swagger;
+namespace Notes.Infrastructure.ConfigureServices;
 
 public static class ConfigureSwagger
 {

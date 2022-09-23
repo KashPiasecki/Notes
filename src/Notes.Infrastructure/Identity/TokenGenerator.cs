@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Notes.Application.Common.Interfaces;
 using Notes.Domain.Configurations;
+using Notes.Domain.Contracts;
 
 namespace Notes.Infrastructure.Identity;
 
@@ -24,10 +25,10 @@ public class TokenGenerator : ITokenGenerator
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Iss, user.Id)
+                new Claim(JwtClaimNames.UserName, user.UserName),
+                new Claim(JwtClaimNames.TokenId, Guid.NewGuid().ToString()),
+                new Claim(JwtClaimNames.Email, user.Email),
+                new Claim(JwtClaimNames.Id, user.Id)
             }),
             Expires = DateTime.UtcNow.AddHours(2),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)

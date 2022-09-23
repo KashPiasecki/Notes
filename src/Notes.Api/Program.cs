@@ -1,6 +1,5 @@
 using Notes.Application.ConfigureServices;
 using Notes.Infrastructure.ConfigureServices;
-using Notes.Infrastructure.ConfigureServices.Swagger;
 
 // WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);
