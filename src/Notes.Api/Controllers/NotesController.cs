@@ -8,7 +8,9 @@ using Notes.Application.CQRS.Note.Commands.Update;
 using Notes.Application.CQRS.Note.Queries;
 using Notes.Application.CQRS.Note.Queries.GetAll;
 using Notes.Application.CQRS.Note.Queries.GetById;
+using Notes.Application.CQRS.Note.Queries.GetByUserId;
 using Notes.Domain.Contracts;
+using Notes.Infrastructure.Utility.Extensions;
 
 namespace Notes.Api.Controllers;
 
@@ -31,6 +33,13 @@ public class NotesController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet(ApiRoutes.User)]
+    public async Task<ActionResult<IEnumerable<GetNoteDto>>> GetForUser()
+    {
+        var result = await _mediator.Send(new GetNotesForUserQuery(HttpContext.GetUserId()));
+        return Ok(result);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<GetNoteDto>> Get([FromRoute] Guid id)
     {
@@ -41,10 +50,11 @@ public class NotesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Guid>> Create([FromBody] CreateNoteCommand createNoteCommand)
     {
-        var result = await _mediator.Send(createNoteCommand);
+        var result = await _mediator.Send(
+            new CreateNoteCommandWithUserId(createNoteCommand.Title, createNoteCommand.Content, HttpContext.GetUserId()));
         return CreatedAtAction(nameof(Get), routeValues: new { id = result.Id }, value: result);
     }
-    
+
     [HttpPut]
     public async Task<ActionResult<GetNoteDto>> Update(UpdateNoteCommand updateNoteCommand)
     {
@@ -52,10 +62,25 @@ public class NotesController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPut(ApiRoutes.User)]
+    public async Task<ActionResult<GetNoteDto>> UpdateForUser(UpdateNoteCommand updateNoteCommand)
+    {
+        var result = await _mediator.Send(new UpdateNoteForUserCommand(updateNoteCommand.Id, updateNoteCommand.Title, updateNoteCommand.Content,
+            HttpContext.GetUserId()));
+        return Ok(result);
+    }
+
     [HttpDelete]
     public async Task<ActionResult> Delete(DeleteNoteCommand deleteNoteCommand)
     {
         await _mediator.Send(deleteNoteCommand);
+        return NoContent();
+    }
+
+    [HttpDelete(ApiRoutes.User)]
+    public async Task<ActionResult> DeleteForUser(DeleteNoteCommand deleteNoteCommand)
+    {
+        await _mediator.Send(new DeleteNoteForUserCommand(deleteNoteCommand.Id, HttpContext.GetUserId()));
         return NoContent();
     }
 }

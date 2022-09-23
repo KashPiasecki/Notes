@@ -5,17 +5,17 @@ using Notes.Application.CQRS.Note.Queries;
 
 namespace Notes.Application.CQRS.Note.Commands.Update;
 
-public record UpdateNoteCommand(Guid Id, string Title, string Content) : IRequest<GetNoteDto>;
+public record UpdateNoteForUserCommand(Guid Id, string Title, string Content, string UserId) : IRequest<GetNoteDto>;
 
-public class UpdateNoteCommandHandler : BaseHandler, IRequestHandler<UpdateNoteCommand, GetNoteDto>
+public class UpdateNoteForUserCommandHandler : BaseHandler, IRequestHandler<UpdateNoteForUserCommand, GetNoteDto>
 {
-    public UpdateNoteCommandHandler(IDataContext dataContext) : base(dataContext)
+    public UpdateNoteForUserCommandHandler(IDataContext dataContext) : base(dataContext)
     {
     }
 
-    public async Task<GetNoteDto> Handle(UpdateNoteCommand request, CancellationToken cancellationToken)
+    public async Task<GetNoteDto> Handle(UpdateNoteForUserCommand request, CancellationToken cancellationToken)
     {
-        var note = await DataContext.Notes.SingleOrDefaultAsync(x => x.Id == request.Id);
+        var note = await DataContext.Notes.SingleOrDefaultAsync(x => x.UserId.Equals(request.UserId) && x.Id == request.Id);
         note.Title = request.Title;
         note.Content = request.Content;
         note.LastTimeModified = DateTime.UtcNow;
@@ -28,7 +28,7 @@ public class UpdateNoteCommandHandler : BaseHandler, IRequestHandler<UpdateNoteC
             Content = note.Content,
             CreationDate = note.CreationDate,
             LastTimeModified = note.LastTimeModified
-            
+
         };
     }
 }

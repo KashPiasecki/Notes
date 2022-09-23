@@ -14,10 +14,12 @@ public class GetAllNotesQueryHandler : BaseHandler, IRequestHandler<GetAllNotesQ
     
     public async Task<IEnumerable<GetNoteDto>> Handle(GetAllNotesQuery request, CancellationToken cancellationToken)
     {
-        var notes = await DataContext.Notes.ToListAsync(cancellationToken);
+        var notes = await DataContext.Notes.Include(x => x.User).ToListAsync(cancellationToken);
         var notesDto = notes.Select(x => new GetNoteDto
         {
             Id = x.Id,
+            UserName = x.User.UserName,
+            UserId = x.User.Id,
             Title = x.Title,
             Content = x.Content,
             CreationDate = x.CreationDate,

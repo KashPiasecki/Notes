@@ -20,6 +20,8 @@ public class GetNoteByIdQueryHandler : BaseHandler, IRequestHandler<GetNoteByIdQ
             return  new GetNoteDto
             {
                 Id = note.Id,
+                UserName = note.User.UserName,
+                UserId = note.User.Id,
                 Title = note.Title,
                 Content = note.Content,
                 CreationDate = note.CreationDate,
