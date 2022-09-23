@@ -1,9 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using Notes.Application.Common.Interfaces;
 using Notes.Domain.Configurations;
 using Notes.Domain.Identity;
@@ -14,11 +10,13 @@ public record RegisterUserCommand(string UserName, string Email, string Password
 
 public class RegisterUserCommandHandler : BaseHandler, IRequestHandler<RegisterUserCommand, AuthenticationResult>
 {
+    private readonly ITokenGenerator _tokenGenerator;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly JwtConfiguration _jwtConfiguration;
 
-    public RegisterUserCommandHandler(IDataContext dataContext, UserManager<IdentityUser> userManager, JwtConfiguration jwtConfiguration) : base(dataContext)
+    public RegisterUserCommandHandler(IDataContext dataContext, ITokenGenerator tokenGenerator, UserManager<IdentityUser> userManager, JwtConfiguration jwtConfiguration) : base(dataContext)
     {
+        _tokenGenerator = tokenGenerator;
         _userManager = userManager;
         _jwtConfiguration = jwtConfiguration;
     }
@@ -28,11 +26,7 @@ public class RegisterUserCommandHandler : BaseHandler, IRequestHandler<RegisterU
         var exisingUser = await _userManager.FindByEmailAsync(request.Email);
         if (exisingUser is not null)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "User with this email address already exists" }
-            };
+            return GenerateFailureByExistResponse();
         }
         
         var newUser = new IdentityUser
@@ -44,32 +38,37 @@ public class RegisterUserCommandHandler : BaseHandler, IRequestHandler<RegisterU
         
         if (!createdUser.Succeeded)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = createdUser.Errors.Select(x => x.Description)
-            };
+            return GenerateFailureByPasswordRequirementsResponse(createdUser);
         }
-        
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_jwtConfiguration.Secret);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub , newUser.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, newUser.Email),
-                new Claim(JwtRegisteredClaimNames.Iss, newUser.Id)
-            }),
-            Expires = DateTime.UtcNow.AddHours(2),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return new AuthenticationSuccessResult {
+        var token = _tokenGenerator.GenerateToken(newUser);
+        return GenerateSuccessResponse(token);
+    }
+
+    private static AuthenticationResult GenerateFailureByPasswordRequirementsResponse(IdentityResult createdUser)
+    {
+        return new AuthenticationFailedResult
+        {
+            Success = false,
+            Errors = createdUser.Errors.Select(x => x.Description)
+        };
+    }
+
+    private static AuthenticationResult GenerateFailureByExistResponse()
+    {
+        return new AuthenticationFailedResult
+        {
+            Success = false,
+            Errors = new[] { "User with this email address already exists" }
+        };
+    }
+
+    private static AuthenticationResult GenerateSuccessResponse(string token)
+    {
+        return new AuthenticationSuccessResult
+        {
             Success = true,
-            Token = tokenHandler.WriteToken(token)
+            Token = token
         };
     }
 }

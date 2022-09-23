@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Notes.Domain.Configurations;
 
-namespace Notes.Infrastructure.Configuration;
+namespace Notes.Infrastructure.ConfigureServices;
 
 public static class ConfigureConfigurations
 {
