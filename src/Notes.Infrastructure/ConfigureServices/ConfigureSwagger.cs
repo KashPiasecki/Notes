@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Notes.Domain.Configurations;
 
-namespace Notes.Infrastructure.ConfigureServices;
+namespace Notes.Infrastructure.ConfigureServices.Swagger;
 
 public static class ConfigureSwagger
 {
@@ -21,16 +21,33 @@ public static class ConfigureSwagger
                     Email = swaggerConfiguration.Email
                 }
             });
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the bearer scheme",
                 Name = "Authorization",
+                Description = "Enter the Bearer Authorization string as following: `Bearer <JWT>`",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                        Reference = new OpenApiReference
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    },
+                    new List<string>()
+                }
             });
         });
     }
-
+    
     public static void UseSwagger(this WebApplication webApplication, SwaggerConfiguration swaggerConfiguration)
     {
         webApplication.UseSwagger(options => { options.RouteTemplate = "/documentation/{documentName}/swagger.json"; });
