@@ -3,16 +3,20 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Notes.Application.Common.Interfaces;
 using Notes.Domain.Entities;
+using Notes.Domain.Identity;
 
 namespace Notes.Infrastructure.Persistence;
 
 public class DataContext : IdentityDbContext<IdentityUser, IdentityRole, string>, IDataContext
 {
+    public DbSet<Note> Notes { get; set; }
+
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
-    
-    public DbSet<Note> Notes { get; set; }
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await base.SaveChangesAsync(cancellationToken);
