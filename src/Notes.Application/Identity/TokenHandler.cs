@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces;
 using Notes.Domain.Configurations;
 using Notes.Domain.Contracts;
@@ -13,7 +15,7 @@ namespace Notes.Application.Identity;
 public interface ITokenHandler
 {
     Task<TokenResponse> GenerateToken(IdentityUser user);
-    ClaimsPrincipal GetPrincipalFromToken(string token);
+    ClaimsPrincipal? GetPrincipalFromToken(string token);
     DateTime GetExpirationTime(long expiryDateUnix);
 }
 
@@ -22,17 +24,21 @@ public class TokenHandler : ITokenHandler
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly TokenValidationParameters _tokenValidationParameters;
     private readonly IDataContext _dataContext;
-    
+    private readonly ILogger<TokenHandler> _logger;
 
-    public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters, IDataContext dataContext)
+
+    public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters, IDataContext dataContext,
+        ILogger<TokenHandler> logger)
     {
         _jwtConfiguration = jwtConfiguration;
         _tokenValidationParameters = tokenValidationParameters;
         _dataContext = dataContext;
+        _logger = logger;
     }
 
     public async Task<TokenResponse> GenerateToken(IdentityUser user)
     {
+        _logger.LogInformation("Attempt to create token for {Email}", user.Email);
         var key = Encoding.ASCII.GetBytes(_jwtConfiguration.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -58,6 +64,7 @@ public class TokenHandler : ITokenHandler
         };
         await _dataContext.RefreshTokens.AddAsync(refreshToken);
         await _dataContext.SaveChangesAsync();
+        _logger.LogInformation("Successfully created token for {Email}", user.Email);
         return new TokenResponse
         {
             Token = tokenHandler.WriteToken(securityToken),
@@ -65,22 +72,23 @@ public class TokenHandler : ITokenHandler
         };
     }
 
-    public ClaimsPrincipal GetPrincipalFromToken(string token)
+    public ClaimsPrincipal? GetPrincipalFromToken(string token)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-
         try
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
             var claimsPrincipal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out var validatedToken);
-            if (!IsJwtWithValidSecurityAlgorithm(validatedToken))
+            if (IsJwtWithValidSecurityAlgorithm(validatedToken))
             {
-                return null;
+                return claimsPrincipal;
             }
-
-            return claimsPrincipal;
+            
+            _logger.LogError("Jwt without valid security algorithm!");
+            throw new JwtInvalidSecurityAlgorithmException();
         }
-        catch
+        catch (Exception e)
         {
+            _logger.LogError(e, "Token validation exception");
             return null;
         }
     }
@@ -89,14 +97,10 @@ public class TokenHandler : ITokenHandler
     {
         var timezoneDifference = DateTime.Now.Subtract(DateTime.UtcNow);
         var dateToExpire = DateTime.UnixEpoch.AddSeconds(expiryDateUnix);
-        return timezoneDifference >= TimeSpan.Zero
-            ? dateToExpire.Add(timezoneDifference)
-            : dateToExpire.Subtract(timezoneDifference);
+        return dateToExpire.Add(timezoneDifference);
     }
 
-    private static bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken)
-    {
-        return (validatedToken is JwtSecurityToken jwtSecurityToken) &&
-               jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
-    }
+    private static bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken) =>
+        (validatedToken is JwtSecurityToken jwtSecurityToken) &&
+        jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
 }

@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
 using Notes.Application.Identity;
 using Notes.Domain.Contracts;
@@ -11,12 +12,13 @@ namespace Notes.Application.CQRS.Identity.Commands;
 
 public record RefreshTokenCommand(string Token, string RefreshToken) : IRequest<AuthenticationResult>;
 
-public class RefreshTokenCommandHandler : BaseHandler, IRequestHandler<RefreshTokenCommand, AuthenticationResult>
+public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler>, IRequestHandler<RefreshTokenCommand, AuthenticationResult>
 {
     private readonly ITokenHandler _tokenHandler;
     private readonly UserManager<IdentityUser> _userManager;
-    
-    public RefreshTokenCommandHandler(IDataContext dataContext, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager) : base(dataContext)
+
+    public RefreshTokenCommandHandler(IDataContext dataContext, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager,
+        ILogger<RefreshTokenCommandHandler> logger) : base(dataContext, logger)
     {
         _tokenHandler = tokenHandler;
         _userManager = userManager;
@@ -24,74 +26,47 @@ public class RefreshTokenCommandHandler : BaseHandler, IRequestHandler<RefreshTo
 
     public async Task<AuthenticationResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
+        Logger.LogInformation("Attempting to refresh token");
         var validatedToken = _tokenHandler.GetPrincipalFromToken(request.Token);
         if (validatedToken is null)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "Invalid token" }
-            };
+            Logger.LogError("Invalid token");
+            return GenerateFailureResponse();
         }
 
         var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type.Equals(JwtRegisteredClaimNames.Exp)).Value);
         var expiryDateTime = _tokenHandler.GetExpirationTime(expiryDateUnix);
-        var localTime = DateTime.Now;
-        if (expiryDateTime > localTime)
+        if (expiryDateTime > DateTime.Now)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "This token hasn't expired yet" }
-            };
+            Logger.LogWarning("Token hasn't expired yet");
+            return GenerateFailureResponse();
         }
 
         var tokenId = validatedToken.Claims.Single(x => x.Type.Equals(JwtClaimNames.Jti)).Value;
-        
-        var storedRefreshToken = await DataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token.Equals(request.RefreshToken));
-        if (storedRefreshToken.JwtId != tokenId)
+        var storedRefreshToken =
+            await DataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token.Equals(request.RefreshToken), cancellationToken: cancellationToken);
+        if (storedRefreshToken is null || storedRefreshToken.JwtId != tokenId)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "This refresh token doesn't exist" }
-            };
-        }
-            
-        if (storedRefreshToken is null)
-        {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "This refresh token doesn't exist" }
-            };
+            Logger.LogError("Refresh token doesn't exist");
+            return GenerateFailureResponse();
         }
 
         if (DateTime.Now > storedRefreshToken.ExpireDate)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "This refresh has expired " }
-            };
+            Logger.LogWarning("Refresh token has expired");
+            return GenerateFailureResponse();
         }
 
         if (storedRefreshToken.Invalidated)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "This refresh token is invalidated" }
-            };
+            Logger.LogWarning("Refresh token is invalidated");
+            return GenerateFailureResponse();
         }
 
         if (storedRefreshToken.Used)
         {
-            return new AuthenticationFailedResult
-            {
-                Success = false,
-                Errors = new[] { "This refresh token is used" }
-            };
+            Logger.LogWarning("Refresh token is used");
+            return GenerateFailureResponse();
         }
 
         storedRefreshToken.Used = true;
@@ -106,6 +81,15 @@ public class RefreshTokenCommandHandler : BaseHandler, IRequestHandler<RefreshTo
             Success = true,
             Token = tokenResponse.Token,
             RefreshToken = tokenResponse.RefreshToken.Token
+        };
+    }
+
+    private static AuthenticationResult GenerateFailureResponse()
+    {
+        return new AuthenticationFailedResult
+        {
+            Success = false,
+            Errors = new[] { "Invalid token" }
         };
     }
 }
