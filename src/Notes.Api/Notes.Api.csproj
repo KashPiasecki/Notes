@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>e78e3bf0-d3aa-4d5b-b9ca-212690ffdf3a</UserSecretsId>
         <RootNamespace>Notes.Api</RootNamespace>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>

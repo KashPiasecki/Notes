@@ -18,9 +18,19 @@
 * HealthChecks
 * Filtering
 * CI/CD with GitHub actions
-# How to run # 
-Create 2 files in the main directory with content to run Postgres in docker-compose. Schema: filename-content
-* `postgres_password.txt-<YOUR_PASSWORD>`
-* `postgres_user.txt-<YOUR_USERNAME>`
 
-Afterwards run in cmd $docker-compose up
+
+# How to run # 
+
+1. Create file .env in the main folder.
+2. Fill the file with secret values:
+    ```
+    db_user=<USERNAME>
+    db_password=<PASSWORD>
+    jwt_secret=<SECRET_64_CHAR>
+    ```
+3. Run docker-compose up to spin up the db and service
+4. Try out on 
+    ```
+    http://localhost:2100/documentation/index.html
+    ```

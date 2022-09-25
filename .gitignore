@@ -480,7 +480,6 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # Local docker secrets
-postgres_password.txt
-postgres_user.txt
+.env
 
 # End of https://www.toptal.com/developers/gitignore/api/rider,csharp

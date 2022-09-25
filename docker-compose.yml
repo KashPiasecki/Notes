@@ -1,27 +1,28 @@
 version: "3.9"
 
-secrets:
-  postgres_user:
-    file: ./postgres_user.txt
-  postgres_password:
-    file: ./postgres_password.txt
-
 services:
   database:
     image: postgres
     restart: always
     ports:
       - "5432:5432"
-    secrets:                  
-      - postgres_password
-      - postgres_user
     environment:
-      POSTGRES_USER_FILE: /run/secrets/postgres_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_USER: ${db_user}
+      POSTGRES_PASSWORD: ${db_password}
       POSTGRES_DB: NotesDb
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  notes-api:
+    build: src/
+    restart: always
+    depends_on:
+      - database
+    environment:
+      NotesConfiguration__Database__ConnectionString: "Host=database;Port=5432;Database=NotesApi;User Id=${db_user};Password=${db_password};"
+      NotesConfiguration__JwtSettings__Secret: "${jwt_secret}"
+    ports:
+      - "2100:80"
 
 volumes:
   pgdata:
