@@ -11,6 +11,16 @@ public static class ConfigureIdentity
 {
     public static void AddIdentity(this IServiceCollection serviceCollection, string secret)
     {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = true
+        };
+        serviceCollection.AddSingleton(tokenValidationParameters);
         serviceCollection.AddIdentity<IdentityUser, IdentityRole>(
             options => { options.SignIn.RequireConfirmedAccount = false; }
         ).AddEntityFrameworkStores<DataContext>();
@@ -23,15 +33,7 @@ public static class ConfigureIdentity
             .AddJwtBearer(x =>
             {
                 x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
-                };
+                x.TokenValidationParameters = tokenValidationParameters;
             });
     }
 }

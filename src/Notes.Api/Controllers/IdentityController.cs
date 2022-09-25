@@ -29,4 +29,11 @@ public class IdentityController : ControllerBase
         var result = await _mediator.Send(loginUserCommand);
         return result.Success ? Ok(result) : BadRequest(result);
     }
+    
+    [HttpPost("refreshToken")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand refreshTokenCommand)
+    {
+        var result = await _mediator.Send(refreshTokenCommand);
+        return result.Success ? Ok(result) : BadRequest(result);
+    }
 }

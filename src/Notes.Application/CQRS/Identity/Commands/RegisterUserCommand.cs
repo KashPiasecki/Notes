@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Notes.Application.Common.Interfaces;
-using Notes.Domain.Configurations;
+using Notes.Application.Identity;
 using Notes.Domain.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;
@@ -10,15 +10,13 @@ public record RegisterUserCommand(string UserName, string Email, string Password
 
 public class RegisterUserCommandHandler : BaseHandler, IRequestHandler<RegisterUserCommand, AuthenticationResult>
 {
-    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ITokenHandler _tokenHandler;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly JwtConfiguration _jwtConfiguration;
 
-    public RegisterUserCommandHandler(IDataContext dataContext, ITokenGenerator tokenGenerator, UserManager<IdentityUser> userManager, JwtConfiguration jwtConfiguration) : base(dataContext)
+    public RegisterUserCommandHandler(IDataContext dataContext, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager) : base(dataContext)
     {
-        _tokenGenerator = tokenGenerator;
+        _tokenHandler = tokenHandler;
         _userManager = userManager;
-        _jwtConfiguration = jwtConfiguration;
     }
 
     public async Task<AuthenticationResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -41,8 +39,8 @@ public class RegisterUserCommandHandler : BaseHandler, IRequestHandler<RegisterU
             return GenerateFailureByPasswordRequirementsResponse(createdUser);
         }
 
-        var token = _tokenGenerator.GenerateToken(newUser);
-        return GenerateSuccessResponse(token);
+        var tokenResponse = await _tokenHandler.GenerateToken(newUser);
+        return GenerateSuccessResponse(tokenResponse);
     }
 
     private static AuthenticationResult GenerateFailureByPasswordRequirementsResponse(IdentityResult createdUser)
@@ -63,12 +61,13 @@ public class RegisterUserCommandHandler : BaseHandler, IRequestHandler<RegisterU
         };
     }
 
-    private static AuthenticationResult GenerateSuccessResponse(string token)
+    private static AuthenticationResult GenerateSuccessResponse(TokenResponse token)
     {
         return new AuthenticationSuccessResult
         {
             Success = true,
-            Token = token
+            Token = token.Token,
+            RefreshToken = token.RefreshToken.Token
         };
     }
 }

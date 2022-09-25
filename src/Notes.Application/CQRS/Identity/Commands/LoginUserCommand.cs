@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Notes.Application.Common.Interfaces;
+using Notes.Application.Identity;
 using Notes.Domain.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;
@@ -9,14 +10,14 @@ public record LoginUserCommand(string Email, string Password) : IRequest<Authent
 
 public class LoginUserCommandHandler : BaseHandler, IRequestHandler<LoginUserCommand, AuthenticationResult>
 {
-    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ITokenHandler _tokenHandler;
 
     private readonly UserManager<IdentityUser> _userManager;
 
-    public LoginUserCommandHandler(IDataContext dataContext, ITokenGenerator tokenGenerator, UserManager<IdentityUser> userManager) :
+    public LoginUserCommandHandler(IDataContext dataContext, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager) :
         base(dataContext)
     {
-        _tokenGenerator = tokenGenerator;
+        _tokenHandler = tokenHandler;
         _userManager = userManager;
     }
 
@@ -30,7 +31,7 @@ public class LoginUserCommandHandler : BaseHandler, IRequestHandler<LoginUserCom
 
         var userHasValidPassword = await _userManager.CheckPasswordAsync(user, request.Password);
 
-        var token = _tokenGenerator.GenerateToken(user);
+        var token = await _tokenHandler.GenerateToken(user);
         return userHasValidPassword
             ? GenerateSuccessResponse(token)
             : GenerateFailureResponse();
@@ -45,12 +46,13 @@ public class LoginUserCommandHandler : BaseHandler, IRequestHandler<LoginUserCom
         };
     }
 
-    private AuthenticationResult GenerateSuccessResponse(string token)
+    private AuthenticationResult GenerateSuccessResponse(TokenResponse token)
     {
         return new AuthenticationSuccessResult
         {
             Success = true,
-            Token = token
+            Token = token.Token,
+            RefreshToken = token.RefreshToken.Token
         };
     }
 }
