@@ -1,8 +1,13 @@
 using Notes.Application.ConfigureServices;
 using Notes.Infrastructure.ConfigureServices;
+using Serilog;
 
 // WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+builder.Host.UseSerilog();
 
 // ServiceCollection - Api
 var services = builder.Services;
@@ -19,7 +24,7 @@ services.AddIdentity(notesConfiguration.JwtSettings.Secret);
 services.AddSwagger(notesConfiguration.Swagger);
 
 // WebApplication
-var app = builder.Build(); 
+var app = builder.Build();
 app.MigrateDatabase();
 app.UseSwagger(notesConfiguration.Swagger);
 app.UseHttpsRedirection();
