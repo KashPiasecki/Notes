@@ -1,13 +1,10 @@
+using Notes.Api.ConfigureServices;
 using Notes.Application.ConfigureServices;
 using Notes.Infrastructure.ConfigureServices;
-using Serilog;
 
 // WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
-builder.Host.UseSerilog();
+builder.UseSerilog();
 
 // ServiceCollection - Api
 var services = builder.Services;
