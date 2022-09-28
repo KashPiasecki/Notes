@@ -1,13 +1,12 @@
 # About #
-### This project was created to try out many different technologies and <b>StandardApi</b> approach with <b>.NET 6</b>. Planning to use: ###
+### This project was created to try out <b> .NET 6 StandardApi</b> clean architecture approach. Technologies/frameworks: ###
 * Serilog
 * Kibana logging platform
 * Docker contenerization
 * EntityFramework Core
 * Postgres SQL
 * CQRS with MediatR 
-* JWT Authorization
-* Roles, Claims
+* JWT Role Authorization
 * Unit tests
 * Integrated tests
 * Automapper
@@ -27,7 +26,7 @@
     db_password=<PASSWORD>
     jwt_secret=<SECRET_64_CHAR>
     ```
-2. Run docker-compose up to spin up the db and service
+2. Run `docker-compose up` to spin up
 3. [Kibana](http://localhost:5601/app/home) set index pattern to `notes.api-*` with @timestamp
 4. Try out:
     * [Swagger](http://localhost:2100/documentation/index.html)

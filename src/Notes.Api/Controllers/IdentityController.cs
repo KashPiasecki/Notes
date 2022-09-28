@@ -16,6 +16,7 @@ public class IdentityController : ControllerBase
         _mediator = mediator;
     }
 
+    
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand registerUserCommand)
     {

@@ -19,6 +19,9 @@ public static class ConfigureDatabase
     {
         using var serviceScope = webApplication.Services.CreateScope();
         using var dataContext = serviceScope.ServiceProvider.GetService<DataContext>();
-        dataContext?.Database.Migrate();
+        if (dataContext!.Database.IsNpgsql())
+        {
+            dataContext.Database.Migrate();
+        }
     }
 }

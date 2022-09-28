@@ -16,7 +16,8 @@ public class GetNoteByIdQueryHandler : BaseHandler<GetNoteByIdQueryHandler>, IRe
     public async Task<GetNoteDto> Handle(GetNoteByIdQuery request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Request to get note with id: {NoteId}", request.Id);
-        var note = await DataContext.Notes.SingleOrDefaultAsync(note => note.Id == request.Id, cancellationToken: cancellationToken);
+        var note = await DataContext.Notes.Include(x => x.User)
+            .SingleOrDefaultAsync(note => note.Id == request.Id, cancellationToken: cancellationToken);
         if (note is null)
         {
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);

@@ -23,5 +23,9 @@
       <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
       <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="$(AssemblyName).IntegrationTests" />
+    </ItemGroup>
 
 </Project>
