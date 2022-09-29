@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,9 +8,9 @@ namespace Notes.Application.CQRS.Note.Commands.Delete;
 
 public record DeleteNoteCommand(Guid Id) : IRequest;
 
-public class DeleteNoteCommandHandler : BaseHandler<DeleteNoteCommandHandler>, IRequestHandler<DeleteNoteCommand>
+public class DeleteNoteCommandHandler : BaseEntityHandler<DeleteNoteCommandHandler>, IRequestHandler<DeleteNoteCommand>
 {
-    public DeleteNoteCommandHandler(IDataContext dataContext, ILogger<DeleteNoteCommandHandler> logger) : base(dataContext, logger)
+    public DeleteNoteCommandHandler(IDataContext dataContext, IMapper mapper, ILogger<DeleteNoteCommandHandler> logger) : base(dataContext, mapper, logger)
     {
     }
 
@@ -22,6 +23,7 @@ public class DeleteNoteCommandHandler : BaseHandler<DeleteNoteCommandHandler>, I
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
             throw new NullReferenceException("Note with given id does not exist");
         }
+        
         DataContext.Notes.Remove(note);
         await DataContext.SaveChangesAsync(cancellationToken);
         Logger.LogInformation("Successfully deleted note {NoteId}", request.Id);

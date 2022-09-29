@@ -61,8 +61,8 @@ public class NotesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Guid>> Create([FromBody] CreateNoteCommand createNoteCommand)
     {
-        var result = await _mediator.Send(
-            new CreateNoteCommandWithUserId(createNoteCommand.Title, createNoteCommand.Content, HttpContext.GetUserId()));
+        createNoteCommand.UserId = HttpContext.GetUserId();
+        var result = await _mediator.Send(createNoteCommand);
         return CreatedAtAction(nameof(Get), routeValues: new { id = result.Id }, value: result);
     }
 

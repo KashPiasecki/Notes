@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,9 +8,9 @@ namespace Notes.Application.CQRS.Note.Queries.GetById;
 
 public record GetNoteByIdQuery(Guid Id) : IRequest<GetNoteDto>;
 
-public class GetNoteByIdQueryHandler : BaseHandler<GetNoteByIdQueryHandler>, IRequestHandler<GetNoteByIdQuery, GetNoteDto>
+public class GetNoteByIdQueryHandler : BaseEntityHandler<GetNoteByIdQueryHandler>, IRequestHandler<GetNoteByIdQuery, GetNoteDto>
 {
-    public GetNoteByIdQueryHandler(IDataContext dataContext, ILogger<GetNoteByIdQueryHandler> logger) : base(dataContext, logger)
+    public GetNoteByIdQueryHandler(IDataContext dataContext, IMapper mapper, ILogger<GetNoteByIdQueryHandler> logger) : base(dataContext, mapper, logger)
     {
     }
 
@@ -25,15 +26,6 @@ public class GetNoteByIdQueryHandler : BaseHandler<GetNoteByIdQueryHandler>, IRe
         }
 
         Logger.LogInformation("Successfully retrieved note with id: {NoteId}", request.Id);
-        return new GetNoteDto
-        {
-            Id = note.Id,
-            UserName = note.User.UserName,
-            UserId = note.User.Id,
-            Title = note.Title,
-            Content = note.Content,
-            CreationDate = note.CreationDate,
-            LastTimeModified = note.LastTimeModified
-        };
+        return Mapper.Map<GetNoteDto>(note);
     }
 }

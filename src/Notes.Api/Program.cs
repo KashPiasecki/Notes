@@ -18,6 +18,7 @@ services.AddMediatR();
 // ServiceCollection - Infrastructure
 services.AddPostgresDatabase(notesConfiguration.Database);
 services.AddIdentity(notesConfiguration.JwtSettings.Secret);
+services.AddAutoMapper();
 services.AddSwagger(notesConfiguration.Swagger);
 
 // WebApplication

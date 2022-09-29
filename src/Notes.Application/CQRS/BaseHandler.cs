@@ -8,7 +8,7 @@ public abstract class BaseHandler<T>
     protected readonly IDataContext DataContext;
     protected readonly ILogger<T> Logger;
 
-    protected BaseHandler(IDataContext dataContext, ILogger<T> logger)
+    protected  BaseHandler(IDataContext dataContext, ILogger<T> logger)
     {
         DataContext = dataContext;
         Logger = logger;

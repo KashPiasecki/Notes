@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
@@ -5,38 +7,25 @@ using Notes.Application.CQRS.Note.Queries;
 
 namespace Notes.Application.CQRS.Note.Commands.Create;
 
-public record CreateNoteCommand(string Title, string Content);
-
-public record CreateNoteCommandWithUserId(string Title, string Content, string UserId) : CreateNoteCommand(Title, Content), IRequest<GetNoteDto>;
-
-public class CreateNoteCommandHandler : BaseHandler<CreateNoteCommandHandler>, IRequestHandler<CreateNoteCommandWithUserId, GetNoteDto>
+public record CreateNoteCommand(string Title, string Content) : IRequest<GetNoteDto>
 {
-    public CreateNoteCommandHandler(IDataContext dataContext, ILogger<CreateNoteCommandHandler> logger) : base(dataContext, logger)
+    [JsonIgnore]
+    public string? UserId { get; set; }
+}
+
+public class CreateNoteCommandHandler : BaseEntityHandler<CreateNoteCommandHandler>, IRequestHandler<CreateNoteCommand, GetNoteDto>
+{
+    public CreateNoteCommandHandler(IDataContext dataContext, IMapper mapper, ILogger<CreateNoteCommandHandler> logger) : base(dataContext, mapper, logger)
     {
     }
 
-    public async Task<GetNoteDto> Handle(CreateNoteCommandWithUserId request, CancellationToken cancellationToken)
+    public async Task<GetNoteDto> Handle(CreateNoteCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Request to create note");
-        var note = new Domain.Entities.Note
-        {
-            UserId = request.UserId,
-            Title = request.Title,
-            Content = request.Content,
-            CreationDate = DateTime.UtcNow,
-            LastTimeModified = DateTime.UtcNow
-        };
-        var newNote = await DataContext.Notes.AddAsync(note, cancellationToken);
+        var note = Mapper.Map<Domain.Entities.Note>(request);
+        var newNote = (await DataContext.Notes.AddAsync(note, cancellationToken)).Entity;
         await DataContext.SaveChangesAsync(cancellationToken);
-        Logger.LogInformation("Successfully created note with id {NoteId}", newNote.Entity.Id);
-        return new GetNoteDto
-        {
-            Id = newNote.Entity.Id,
-            UserId = newNote.Entity.UserId,
-            Title = newNote.Entity.Title,
-            Content = newNote.Entity.Content,
-            CreationDate = newNote.Entity.CreationDate,
-            LastTimeModified = newNote.Entity.LastTimeModified
-        };
+        Logger.LogInformation("Successfully created note with id {NoteId}", newNote.Id);
+        return Mapper.Map<GetNoteDto>(newNote);
     }
 }

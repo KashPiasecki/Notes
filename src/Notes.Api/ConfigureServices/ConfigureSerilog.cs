@@ -19,7 +19,7 @@ public static class ConfigureSerilog
             {
                 AutoRegisterTemplate = true,
                 IndexFormat =
-                    $"{Assembly.GetExecutingAssembly().GetName().Name!.ToLower()}-{env.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
+                    $"{Assembly.GetExecutingAssembly().GetName().Name?.ToLower()}-{env.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}"
             })
             .ReadFrom.Configuration(builder.Configuration)
             .CreateLogger();

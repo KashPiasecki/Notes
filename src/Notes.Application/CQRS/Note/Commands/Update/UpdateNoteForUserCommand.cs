@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -8,9 +9,9 @@ namespace Notes.Application.CQRS.Note.Commands.Update;
 
 public record UpdateNoteForUserCommand(Guid Id, string Title, string Content, string UserId) : IRequest<GetNoteDto>;
 
-public class UpdateNoteForUserCommandHandler : BaseHandler<UpdateNoteForUserCommandHandler>, IRequestHandler<UpdateNoteForUserCommand, GetNoteDto>
+public class UpdateNoteForUserCommandHandler : BaseEntityHandler<UpdateNoteForUserCommandHandler>, IRequestHandler<UpdateNoteForUserCommand, GetNoteDto>
 {
-    public UpdateNoteForUserCommandHandler(IDataContext dataContext, ILogger<UpdateNoteForUserCommandHandler> logger) : base(dataContext, logger)
+    public UpdateNoteForUserCommandHandler(IDataContext dataContext, IMapper mapper, ILogger<UpdateNoteForUserCommandHandler> logger) : base(dataContext, mapper, logger)
     {
     }
 
@@ -24,19 +25,10 @@ public class UpdateNoteForUserCommandHandler : BaseHandler<UpdateNoteForUserComm
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
             throw new NullReferenceException("Note with given id does not exist");
         }
-        note.Title = request.Title;
-        note.Content = request.Content;
-        note.LastTimeModified = DateTime.UtcNow;
+
+        Mapper.Map(request, note);
         await DataContext.SaveChangesAsync(cancellationToken);
         Logger.LogInformation("Successfully updated note {NoteId} for user {UserId}", request.Id, request.UserId);
-        return new GetNoteDto
-        {
-            UserId = note.UserId,
-            Id = note.Id,
-            Title = note.Title,
-            Content = note.Content,
-            CreationDate = note.CreationDate,
-            LastTimeModified = note.LastTimeModified
-        };
+        return Mapper.Map<GetNoteDto>(note);
     }
 }

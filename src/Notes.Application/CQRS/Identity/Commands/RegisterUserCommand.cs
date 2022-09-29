@@ -52,6 +52,8 @@ public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler
             Email = request.Email,
             UserName = request.UserName
         };
+
+        var createdUser = await _userManager.CreateAsync(newUser, request.Password);
         
         await _userManager.AddToRoleAsync(newUser, RoleNames.User);
         if (request.IsAdmin)
@@ -59,7 +61,6 @@ public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler
             await _userManager.RemoveFromRoleAsync(newUser, RoleNames.User);
             await _userManager.AddToRolesAsync(newUser, new[]{ RoleNames.Admin, RoleNames.User});
         }
-        var createdUser = await _userManager.CreateAsync(newUser, request.Password);
 
         if (!createdUser.Succeeded)
         {

@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -7,9 +8,9 @@ namespace Notes.Application.CQRS.Note.Queries.GetAll;
 
 public record GetAllNotesQuery : IRequest<IEnumerable<GetNoteDto>>;
 
-public class GetAllNotesQueryHandler : BaseHandler<GetAllNotesQueryHandler>, IRequestHandler<GetAllNotesQuery, IEnumerable<GetNoteDto>>
+public class GetAllNotesQueryHandler : BaseEntityHandler<GetAllNotesQueryHandler>, IRequestHandler<GetAllNotesQuery, IEnumerable<GetNoteDto>>
 {
-    public GetAllNotesQueryHandler(IDataContext dataContext, ILogger<GetAllNotesQueryHandler> logger) : base(dataContext, logger)
+    public GetAllNotesQueryHandler(IDataContext dataContext, IMapper mapper, ILogger<GetAllNotesQueryHandler> logger) : base(dataContext, mapper, logger)
     {
     }
 
@@ -17,16 +18,7 @@ public class GetAllNotesQueryHandler : BaseHandler<GetAllNotesQueryHandler>, IRe
     {
         Logger.LogInformation("Request to get all notes");
         var notes = await DataContext.Notes.Include(x => x.User).ToListAsync(cancellationToken);
-        var notesDto = notes.Select(x => new GetNoteDto
-        {
-            Id = x.Id,
-            UserName = x.User.UserName,
-            UserId = x.User.Id,
-            Title = x.Title,
-            Content = x.Content,
-            CreationDate = x.CreationDate,
-            LastTimeModified = x.LastTimeModified
-        });
+        var notesDto = Mapper.Map<IEnumerable<GetNoteDto>>(notes);
         Logger.LogInformation("Successfully retrieved all notes");
         return notesDto;
     }

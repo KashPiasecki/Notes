@@ -51,7 +51,7 @@ public class IntegrationTest
 
     private async Task<string> GetJwtAsync()
     {
-        var testUsername = Fixture.Create<Guid>().ToString();
+        var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
         var testPassword = $"Password{testUsername}";
         var response =
