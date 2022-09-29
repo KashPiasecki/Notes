@@ -12,20 +12,12 @@ namespace Notes.Api.IntegrationTests.Controllers;
 
 public class IdentityControllerTests : IntegrationTest
 {
-    private IFixture? _fixture;
-
-    [SetUp]
-    public void SetUp() => _fixture = new Fixture();
-    
-    [TearDown]
-    public void TearDown() => Dispose();
-    
     [Test]
     public async Task Register_WithProperValues_CreatesUser()
     {
         // Arrange
-        var testUsername = _fixture.Create<Guid>().ToString();
-        var testEmail = _fixture.Create<MailAddress>().ToString();
+        var testUsername = Fixture.Create<string>();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
         var testPassword = $"Password{testUsername}";
 
         // Act
@@ -43,9 +35,9 @@ public class IdentityControllerTests : IntegrationTest
     public async Task Register_WithImproperValues_ReturnsBadRequest()
     {
         // Arrange
-        var testUsername = _fixture.Create<Guid>().ToString();
-        var testEmail = _fixture.Create<MailAddress>().ToString();
-        var testPassword = _fixture.Create<int>().ToString();
+        var testUsername = Fixture.Create<Guid>().ToString();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
+        var testPassword = Fixture.Create<int>().ToString();
 
         // Act
         var response = 
@@ -61,8 +53,8 @@ public class IdentityControllerTests : IntegrationTest
     public async Task Login_WithProperCredentials_ReturnsToken()
     {
         // Arrange
-        var testUsername = _fixture.Create<Guid>().ToString();
-        var testEmail = _fixture.Create<MailAddress>().ToString();
+        var testUsername = Fixture.Create<string>();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
         var testPassword = $"Password{testUsername}";
 
         // Act
@@ -80,8 +72,8 @@ public class IdentityControllerTests : IntegrationTest
     public async Task Login_WithImproperCredentials_ReturnsBadRequest()
     {
         // Arrange
-        var testEmail = _fixture.Create<MailAddress>().ToString();
-        var testPassword = _fixture.Create<string>();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
+        var testPassword = Fixture.Create<string>();
 
         // Act
         var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Login, new LoginUserCommand(testEmail, testPassword));
@@ -118,14 +110,14 @@ public class IdentityControllerTests : IntegrationTest
     public async Task RefreshToken_WithImproperToken_ReturnsBadRequest()
     {
         // Arrange
-        var testUsername = _fixture.Create<Guid>().ToString();
-        var testEmail = _fixture.Create<MailAddress>().ToString();
+        var testUsername = Fixture.Create<string>();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
         var testPassword = $"Password{testUsername}";
 
         // Act
         var registerResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
         var registerResult = await registerResponse.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
-        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RefreshToken, new RefreshTokenCommand(registerResult!.Token, registerResult!.RefreshToken));
+        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RefreshToken, new RefreshTokenCommand(registerResult.Token, registerResult.RefreshToken));
         var refreshTokenResult = await response.Content.ReadFromJsonAsync<AuthenticationFailedResult>();
 
         // Assert

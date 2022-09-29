@@ -16,7 +16,7 @@ namespace Notes.Api.Controllers;
 
 [ApiController]
 [Route($"{ApiRoutes.Base}/[controller]")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = RoleNames.User)]
 public class NotesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -27,24 +27,35 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<IEnumerable<GetNoteDto>>> GetAll()
     {
         var result = await _mediator.Send(new GetAllNotesQuery());
         return Ok(result);
     }
 
-    [HttpGet(ApiRoutes.User)]
-    public async Task<ActionResult<IEnumerable<GetNoteDto>>> GetForUser()
-    {
-        var result = await _mediator.Send(new GetNotesForUserQuery(HttpContext.GetUserId()));
-        return Ok(result);
-    }
-
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = RoleNames.Admin)]
     public async Task<ActionResult<GetNoteDto>> Get([FromRoute] Guid id)
     {
         var result = await _mediator.Send(new GetNoteByIdQuery(id));
         return Ok(result);
+    }
+
+    [HttpPut]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult<GetNoteDto>> Update(UpdateNoteCommand updateNoteCommand)
+    {
+        var result = await _mediator.Send(updateNoteCommand);
+        return Ok(result);
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<ActionResult> Delete(DeleteNoteCommand deleteNoteCommand)
+    {
+        await _mediator.Send(deleteNoteCommand);
+        return NoContent();
     }
 
     [HttpPost]
@@ -55,10 +66,10 @@ public class NotesController : ControllerBase
         return CreatedAtAction(nameof(Get), routeValues: new { id = result.Id }, value: result);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<GetNoteDto>> Update(UpdateNoteCommand updateNoteCommand)
+    [HttpGet(ApiRoutes.User)]
+    public async Task<ActionResult<IEnumerable<GetNoteDto>>> GetForUser()
     {
-        var result = await _mediator.Send(updateNoteCommand);
+        var result = await _mediator.Send(new GetNotesForUserQuery(HttpContext.GetUserId()));
         return Ok(result);
     }
 
@@ -68,13 +79,6 @@ public class NotesController : ControllerBase
         var result = await _mediator.Send(new UpdateNoteForUserCommand(updateNoteCommand.Id, updateNoteCommand.Title, updateNoteCommand.Content,
             HttpContext.GetUserId()));
         return Ok(result);
-    }
-
-    [HttpDelete]
-    public async Task<ActionResult> Delete(DeleteNoteCommand deleteNoteCommand)
-    {
-        await _mediator.Send(deleteNoteCommand);
-        return NoContent();
     }
 
     [HttpDelete(ApiRoutes.User)]

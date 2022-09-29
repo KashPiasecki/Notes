@@ -31,3 +31,4 @@
 4. Try out:
     * [Swagger](http://localhost:2100/documentation/index.html)
     * [Kibana](http://localhost:5601/app/home)
+5. First user created will be admin user

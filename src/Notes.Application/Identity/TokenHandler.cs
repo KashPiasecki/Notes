@@ -23,32 +23,43 @@ public class TokenHandler : ITokenHandler
 {
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly TokenValidationParameters _tokenValidationParameters;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IDataContext _dataContext;
     private readonly ILogger<TokenHandler> _logger;
 
 
     public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters, IDataContext dataContext,
-        ILogger<TokenHandler> logger)
+        ILogger<TokenHandler> logger, UserManager<IdentityUser> userManager)
     {
         _jwtConfiguration = jwtConfiguration;
         _tokenValidationParameters = tokenValidationParameters;
         _dataContext = dataContext;
         _logger = logger;
+        _userManager = userManager;
     }
 
     public async Task<TokenResponse> GenerateToken(IdentityUser user)
     {
         _logger.LogInformation("Attempt to create token for {Email}", user.Email);
         var key = Encoding.ASCII.GetBytes(_jwtConfiguration.Secret);
+
+        var claims = new List<Claim>
+        {
+            new (JwtClaimNames.Sub, user.UserName),
+            new (JwtClaimNames.Jti, Guid.NewGuid().ToString()),
+            new (JwtClaimNames.Email, user.Email),
+            new (JwtClaimNames.UserId, user.Id),
+            new (ClaimTypes.Role, RoleNames.User)
+        };
+        
+        if (await _userManager.IsInRoleAsync(user, RoleNames.Admin))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, RoleNames.Admin));
+        }
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(JwtClaimNames.Sub, user.UserName),
-                new Claim(JwtClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtClaimNames.Email, user.Email),
-                new Claim(JwtClaimNames.UserId, user.Id)
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.Add(TimeSpan.Parse(_jwtConfiguration.TokenLifetime)),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
@@ -82,7 +93,7 @@ public class TokenHandler : ITokenHandler
             {
                 return claimsPrincipal;
             }
-            
+
             _logger.LogError("Jwt without valid security algorithm!");
             throw new JwtInvalidSecurityAlgorithmException();
         }

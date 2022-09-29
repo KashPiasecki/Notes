@@ -13,14 +13,6 @@ namespace Notes.Api.IntegrationTests.Controllers;
 
 public class NotesControllerTests : IntegrationTest
 {
-    private IFixture? _fixture;
-
-    [SetUp]
-    public void SetUp() => _fixture = new Fixture();
-    
-    [TearDown]
-    public void TearDown() => Dispose();
-
     [TestCase(ApiRoutes.Notes.Get)]
     [TestCase(ApiRoutes.Notes.User.Get)]
     public async Task AnyEndpoint_WithoutAuthentication_ReturnsUnauthorized(string uri)
@@ -54,7 +46,7 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var createNoteCommand = _fixture.Create<CreateNoteCommand>();
+        var createNoteCommand = Fixture.Create<CreateNoteCommand>();
 
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
@@ -75,7 +67,7 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var createNoteCommand = _fixture.Create<CreateNoteCommand>();
+        var createNoteCommand = Fixture.Create<CreateNoteCommand>();
 
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
@@ -87,7 +79,7 @@ public class NotesControllerTests : IntegrationTest
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         note?.Title.Should().Be(createNoteCommand.Title);
         note?.Content.Should().Be(createNoteCommand.Content);
-        note?.Id.Should().Be(postResult!.Id);
+        note?.Id.Should().Be(postResult.Id);
     }
 
     [Test]
@@ -109,7 +101,7 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var createNoteCommand = _fixture.Create<CreateNoteCommand>();
+        var createNoteCommand = Fixture.Create<CreateNoteCommand>();
 
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
@@ -126,7 +118,7 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var createNoteCommand = _fixture!.Build<CreateNoteCommand>()
+        var createNoteCommand = Fixture.Build<CreateNoteCommand>()
             .With(x => x.Title, string.Empty)
             .With(x => x.Content, string.Empty)
             .Create();
@@ -143,12 +135,12 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var createNoteCommand = _fixture.Create<CreateNoteCommand>();
+        var createNoteCommand = Fixture.Create<CreateNoteCommand>();
 
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
         var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
-        var updateNoteCommand = _fixture!.Build<UpdateNoteCommand>().With(x => x.Id, postResult?.Id).Create();
+        var updateNoteCommand = Fixture.Build<UpdateNoteCommand>().With(x => x.Id, postResult?.Id).Create();
         var response = await TestClient.PutAsJsonAsync(ApiRoutes.Notes.User.Update, updateNoteCommand);
         var note = await response.Content.ReadFromJsonAsync<GetNoteDto>();
 
@@ -164,7 +156,7 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var updateNoteCommand = _fixture.Create<UpdateNoteCommand>();
+        var updateNoteCommand = Fixture.Create<UpdateNoteCommand>();
 
         // Act
         var response = await TestClient.PutAsJsonAsync(ApiRoutes.Notes.User.Update, updateNoteCommand);
@@ -178,12 +170,12 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-        var createNoteCommand = _fixture.Create<CreateNoteCommand>();
+        var createNoteCommand = Fixture.Create<CreateNoteCommand>();
 
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
         var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
-        var deleteNoteCommand = _fixture!.Build<DeleteNoteCommand>()
+        var deleteNoteCommand = Fixture.Build<DeleteNoteCommand>()
             .With(x => x.Id, postResult?.Id)
             .Create();
         var response = await TestClient.DeleteWithJsonAsync(ApiRoutes.Notes.User.Delete, deleteNoteCommand);
@@ -199,7 +191,7 @@ public class NotesControllerTests : IntegrationTest
         await AuthenticateAsync();
 
         // Act
-        var response = await TestClient.DeleteAsync(ApiRoutes.Notes.Delete.Replace("<id>", _fixture.Create<string>()));
+        var response = await TestClient.DeleteAsync(ApiRoutes.Notes.Delete.Replace("<id>", Fixture.Create<string>()));
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

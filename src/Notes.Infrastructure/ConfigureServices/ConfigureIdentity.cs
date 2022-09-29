@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Notes.Domain.Contracts;
 using Notes.Infrastructure.Persistence;
 
 namespace Notes.Infrastructure.ConfigureServices;
@@ -35,5 +36,10 @@ public static class ConfigureIdentity
                 x.SaveToken = true;
                 x.TokenValidationParameters = tokenValidationParameters;
             });
+        serviceCollection.AddAuthorization(options =>
+        {
+            options.AddPolicy("RolePolicy", policy => policy.RequireRole(RoleNames.User));
+            options.AddPolicy("RolePolicy", policy => policy.RequireRole(RoleNames.Admin));
+        });
     }
 }

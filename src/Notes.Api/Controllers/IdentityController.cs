@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Contracts;
@@ -16,6 +17,13 @@ public class IdentityController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpPost("registerAdmin")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterUserCommand registerUserCommand)
+    {
+        registerUserCommand.IsAdmin = true;
+        return await Register(registerUserCommand);
+    }
     
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand registerUserCommand)

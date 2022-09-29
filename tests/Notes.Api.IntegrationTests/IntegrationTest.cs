@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mail;
+using AutoFixture;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,19 +10,20 @@ using Notes.Api.IntegrationTests.Utility;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Identity;
 using Notes.Infrastructure.Persistence;
+using NUnit.Framework;
 
 namespace Notes.Api.IntegrationTests;
 
-public class IntegrationTest : IDisposable
+public class IntegrationTest
 {
-    protected readonly HttpClient TestClient;
-    private readonly IServiceProvider _serviceProvider;
-    private const string TestUsername = "TestUser";
-    private const string TestEmail = "test@example.com";
-    private const string TestPassword = "Password123!@#";
-
-    protected IntegrationTest()
+    protected HttpClient TestClient;
+    protected Fixture Fixture;
+    private IServiceProvider _serviceProvider;
+    
+    [SetUp]
+    public void SetUp()
     {
+        Fixture = new Fixture();
         var appFactory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
@@ -34,6 +37,13 @@ public class IntegrationTest : IDisposable
         TestClient = appFactory.CreateDefaultClient();
     }
 
+    [TearDown]
+    public void TearDown(){
+        using var serviceScope = _serviceProvider?.CreateScope();
+        var context = serviceScope?.ServiceProvider.GetRequiredService<DataContext>();
+        context?.Database.EnsureDeleted();
+    }
+
     protected async Task AuthenticateAsync()
     {
         TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
@@ -41,16 +51,12 @@ public class IntegrationTest : IDisposable
 
     private async Task<string> GetJwtAsync()
     {
-        var response = 
-            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(TestUsername, TestEmail, TestPassword));
+        var testUsername = Fixture.Create<Guid>().ToString();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
+        var testPassword = $"Password{testUsername}";
+        var response =
+            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
         var registrationResponse = await response.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
-        return registrationResponse!.Token;
-    }
-
-    public void Dispose()
-    {
-        using var serviceScope = _serviceProvider.CreateScope();
-        var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
-        context.Database.EnsureDeleted();
+        return registrationResponse.Token;
     }
 }
