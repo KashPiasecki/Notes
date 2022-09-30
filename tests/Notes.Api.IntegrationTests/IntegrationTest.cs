@@ -39,9 +39,9 @@ public class IntegrationTest
 
     [TearDown]
     public void TearDown(){
-        using var serviceScope = _serviceProvider?.CreateScope();
-        var context = serviceScope?.ServiceProvider.GetRequiredService<DataContext>();
-        context?.Database.EnsureDeleted();
+        using var serviceScope = _serviceProvider.CreateScope();
+        var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+        context.Database.EnsureDeleted();
     }
 
     protected async Task AuthenticateAsync()

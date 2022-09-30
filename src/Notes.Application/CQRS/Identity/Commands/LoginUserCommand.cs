@@ -23,7 +23,7 @@ public class LoginUserCommandHandler : BaseHandler<LoginUserCommandHandler>, IRe
 
     public async Task<AuthenticationResult> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        Logger.LogInformation("User {0} trying to log in", request.Email);
+        Logger.LogInformation("User {Email} trying to log in", request.Email);
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
         {

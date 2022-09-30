@@ -83,17 +83,16 @@ public class NotesControllerTests : IntegrationTest
     }
 
     [Test]
-    public async Task GetById_WithInvalidId_ReturnsBadRequest()
+    public async Task GetById_WithInvalidId_ReturnsNotFound()
     {
         // Arrange
         await AuthenticateAsync();
-        var fixture = new Fixture();
 
         // Act
-        var response = await TestClient.GetAsync(ApiRoutes.Notes.GetById.Replace("<id>", fixture.Create<string>()));
+        var response = await TestClient.GetAsync(ApiRoutes.Notes.GetById.Replace("<id>", Fixture.Create<string>()));
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Test]
@@ -114,7 +113,7 @@ public class NotesControllerTests : IntegrationTest
     }
 
     [Test]
-    public async Task Post_WithInvalidValues_ReturnsBadRequest()
+    public async Task Post_WithInvalidValues_ReturnsUnprocessableEntity()
     {
         // Arrange
         await AuthenticateAsync();
@@ -127,7 +126,7 @@ public class NotesControllerTests : IntegrationTest
         var response = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
     }
 
     [Test]
@@ -152,7 +151,7 @@ public class NotesControllerTests : IntegrationTest
     }
 
     [Test]
-    public async Task Put_WithInvalidValues_ReturnsBadRequest()
+    public async Task Put_WithINotExistingEntity_ReturnsNotFound()
     {
         // Arrange
         await AuthenticateAsync();
@@ -162,7 +161,29 @@ public class NotesControllerTests : IntegrationTest
         var response = await TestClient.PutAsJsonAsync(ApiRoutes.Notes.User.Update, updateNoteCommand);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Test]
+    public async Task Put_WithInvalidValues_ReturnsUnprocessableEntity()
+    {
+        // Arrange
+        await AuthenticateAsync();
+        // Act
+        var createNoteCommand = Fixture.Create<CreateNoteCommand>();
+        var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
+        var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
+        var updateNoteCommand = Fixture.Build<UpdateNoteCommand>()
+            .With(x => x.Id, postResult?.Id)
+            .With(x => x.Title, string.Empty)
+            .With(x => x.Content, string.Empty)
+            .Create();
+        
+        // Act
+        var response = await TestClient.PutAsJsonAsync(ApiRoutes.Notes.User.Update, updateNoteCommand);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
     }
 
     [Test]
@@ -185,15 +206,16 @@ public class NotesControllerTests : IntegrationTest
     }
 
     [Test]
-    public async Task Delete_WithInvalidValues_ReturnsBadRequest()
+    public async Task Delete_WithInvalidValues_ReturnsNotFound()
     {
         // Arrange
         await AuthenticateAsync();
+        var deleteNoteCommand = Fixture.Create<DeleteNoteCommand>();
 
         // Act
-        var response = await TestClient.DeleteAsync(ApiRoutes.Notes.Delete.Replace("<id>", Fixture.Create<string>()));
+        var response = await TestClient.DeleteWithJsonAsync(ApiRoutes.Notes.User.Delete, deleteNoteCommand);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

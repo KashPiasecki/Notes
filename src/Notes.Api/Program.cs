@@ -1,4 +1,5 @@
 using Notes.Api.ConfigureServices;
+using Notes.Api.Middlewares;
 using Notes.Application.ConfigureServices;
 using Notes.Infrastructure.ConfigureServices;
 
@@ -7,19 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.UseSerilog();
 
 // ServiceCollection - Api
-var services = builder.Services;
-var notesConfiguration = services.AddConfigurations(builder.Configuration);
-services.AddControllers();
+var serviceCollection = builder.Services;
+var notesConfiguration = serviceCollection.AddConfigurations(builder.Configuration);
+serviceCollection.AddControllers();
+serviceCollection.AddTransient<ExceptionHandlingMiddleware>();
 
 // ServiceCollection - Application
-services.AddApplication();
-services.AddMediatR();
+serviceCollection.AddApplication();
+serviceCollection.AddCQRS();
 
 // ServiceCollection - Infrastructure
-services.AddPostgresDatabase(notesConfiguration.Database);
-services.AddIdentity(notesConfiguration.JwtSettings.Secret);
-services.AddAutoMapper();
-services.AddSwagger(notesConfiguration.Swagger);
+serviceCollection.AddPostgresDatabase(notesConfiguration.Database);
+serviceCollection.AddIdentity(notesConfiguration.JwtSettings.Secret);
+serviceCollection.AddAutoMapper();
+serviceCollection.AddSwagger(notesConfiguration.Swagger);
 
 // WebApplication
 var app = builder.Build();
@@ -29,4 +31,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.Run();

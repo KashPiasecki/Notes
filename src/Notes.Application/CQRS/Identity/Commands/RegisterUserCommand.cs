@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,16 @@ public record RegisterUserCommand(string UserName, string Email, string Password
 {
     [JsonIgnore]
     public bool IsAdmin { get; set; }
-} 
+}
+
+public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
+{
+    public RegisterUserCommandValidator()
+    {
+        RuleFor(x => x.Email).EmailAddress();
+        RuleFor(x => x.UserName).NotEmpty().MinimumLength(4).MaximumLength(50);
+    }
+}
 
 public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler>, IRequestHandler<RegisterUserCommand, AuthenticationResult>
 {

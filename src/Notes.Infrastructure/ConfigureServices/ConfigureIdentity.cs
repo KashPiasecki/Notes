@@ -23,7 +23,12 @@ public static class ConfigureIdentity
         };
         serviceCollection.AddSingleton(tokenValidationParameters);
         serviceCollection.AddIdentity<IdentityUser, IdentityRole>(
-            options => { options.SignIn.RequireConfirmedAccount = false; }
+            options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            }
         ).AddEntityFrameworkStores<DataContext>();
         serviceCollection.AddAuthentication(x =>
             {

@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces;
 
 namespace Notes.Application.CQRS.Note.Commands.Delete;
@@ -22,7 +23,7 @@ public class DeleteNoteForUserCommandHandler : BaseEntityHandler<DeleteNoteForUs
         if (note is null)
         {
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
-            throw new NullReferenceException("Note with given id does not exist");
+            throw new NotFoundException("Note with given id does not exist");
         }
         
         DataContext.Notes.Remove(note);

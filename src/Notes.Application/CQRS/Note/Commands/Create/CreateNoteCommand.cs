@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
@@ -11,6 +12,15 @@ public record CreateNoteCommand(string Title, string Content) : IRequest<GetNote
 {
     [JsonIgnore]
     public string? UserId { get; set; }
+}
+
+public sealed class CreateNoteCommandValidator : AbstractValidator<CreateNoteCommand>
+{
+    public CreateNoteCommandValidator()
+    {
+        RuleFor(x => x.Title).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Content).NotEmpty().MaximumLength(255);
+    }
 }
 
 public class CreateNoteCommandHandler : BaseEntityHandler<CreateNoteCommandHandler>, IRequestHandler<CreateNoteCommand, GetNoteDto>

@@ -1,13 +1,24 @@
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces;
 using Notes.Application.CQRS.Note.Queries;
 
 namespace Notes.Application.CQRS.Note.Commands.Update;
 
 public record UpdateNoteForUserCommand(Guid Id, string Title, string Content, string UserId) : IRequest<GetNoteDto>;
+
+public class UpdateNoteCommandForUserValidator : AbstractValidator<UpdateNoteForUserCommand>
+{
+    public UpdateNoteCommandForUserValidator()
+    {
+        RuleFor(x => x.Title).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Content).NotEmpty().MaximumLength(255);
+    }
+}
 
 public class UpdateNoteForUserCommandHandler : BaseEntityHandler<UpdateNoteForUserCommandHandler>, IRequestHandler<UpdateNoteForUserCommand, GetNoteDto>
 {
@@ -23,7 +34,7 @@ public class UpdateNoteForUserCommandHandler : BaseEntityHandler<UpdateNoteForUs
         if (note is null)
         {
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
-            throw new NullReferenceException("Note with given id does not exist");
+            throw new NotFoundException("Note with given id does not exist");
         }
 
         Mapper.Map(request, note);
