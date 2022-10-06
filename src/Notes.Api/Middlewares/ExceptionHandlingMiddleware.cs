@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Notes.Application.Common.Exceptions;
+using Notes.Domain.Contracts;
 using ApplicationException = Notes.Application.Common.Exceptions.ApplicationException;
 using ValidationException = Notes.Application.Common.Exceptions.ValidationException;
 
@@ -30,12 +31,12 @@ public class ExceptionHandlingMiddleware : IMiddleware
     private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
         var statusCode = GetStatusCode(exception);
-        var response = new
+        var response = new ErrorResponse
         {
-            title = GetTitle(exception),
-            status = statusCode,
-            detail = exception.Message,
-            errors = GetErrors(exception)
+            Title = GetTitle(exception),
+            StatusCode = statusCode,
+            Details = exception.Message,
+            Errors = GetErrors(exception)
         };
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = statusCode;

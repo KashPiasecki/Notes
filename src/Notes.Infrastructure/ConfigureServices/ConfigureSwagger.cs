@@ -11,6 +11,7 @@ public static class ConfigureSwagger
     {
         serviceCollection.AddSwaggerGen(options =>
         {
+            options.EnableAnnotations();
             options.SwaggerDoc($"{swaggerConfiguration.Version}", new OpenApiInfo
             {
                 Title = swaggerConfiguration.Name,
@@ -47,7 +48,7 @@ public static class ConfigureSwagger
             });
         });
     }
-    
+
     public static void UseSwagger(this WebApplication webApplication, SwaggerConfiguration swaggerConfiguration)
     {
         webApplication.UseSwagger(options => { options.RouteTemplate = "/documentation/{documentName}/swagger.json"; });
