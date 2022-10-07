@@ -27,7 +27,10 @@ public static class ConfigureIdentity
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = true;
                 options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 6;
             }
         ).AddEntityFrameworkStores<DataContext>();
         serviceCollection.AddAuthentication(x =>

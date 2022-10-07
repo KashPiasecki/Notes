@@ -45,12 +45,23 @@ services:
     networks:
       - notes
 
+  redis:
+    image: redis:7.0.5
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes: 
+      - cache:/data
+    networks:
+      - notes
+
   notes-api:
     build: src/
     restart: always
     depends_on:
       - database
       - kibana
+      - redis
     environment:
       - ASPNETCORE_ENVIRONMENT=docker
       - NotesConfiguration__Database__ConnectionString=Host=database;Port=5432;Database=NotesApi;User Id=${db_user};Password=${db_password};
@@ -62,4 +73,8 @@ services:
 
 volumes:
   pgdata:
+    driver: local
   elasticsearch-data:
+    driver: local
+  cache:
+    driver: local

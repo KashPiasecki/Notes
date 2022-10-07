@@ -18,6 +18,8 @@ serviceCollection.AddApplication();
 serviceCollection.AddCQRS();
 
 // ServiceCollection - Infrastructure
+serviceCollection.AddInfrastructureServices();
+serviceCollection.AddRedis(notesConfiguration.Redis);
 serviceCollection.AddPostgresDatabase(notesConfiguration.Database);
 serviceCollection.AddIdentity(notesConfiguration.JwtSettings.Secret);
 serviceCollection.AddAutoMapper();

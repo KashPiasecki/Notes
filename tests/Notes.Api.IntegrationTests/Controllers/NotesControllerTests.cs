@@ -79,7 +79,7 @@ public class NotesControllerTests : IntegrationTest
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         note?.Title.Should().Be(createNoteCommand.Title);
         note?.Content.Should().Be(createNoteCommand.Content);
-        note?.Id.Should().Be(postResult.Id);
+        note?.Id.Should().Be(postResult!.Id);
     }
 
     [Test]

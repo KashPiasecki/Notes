@@ -18,7 +18,7 @@ public class IdentityControllerTests : IntegrationTest
         // Arrange
         var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
-        var testPassword = $"Password{testUsername}";
+        var testPassword = Fixture.Create<string>();
 
         // Act
         var response = 
@@ -55,7 +55,7 @@ public class IdentityControllerTests : IntegrationTest
         // Arrange
         var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
-        var testPassword = $"Password{testUsername}";
+        var testPassword = Fixture.Create<string>();
 
         // Act
         await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
@@ -112,12 +112,12 @@ public class IdentityControllerTests : IntegrationTest
         // Arrange
         var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
-        var testPassword = $"Password{testUsername}";
+        var testPassword = Fixture.Create<string>();
 
         // Act
         var registerResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
         var registerResult = await registerResponse.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
-        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RefreshToken, new RefreshTokenCommand(registerResult.Token, registerResult.RefreshToken));
+        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RefreshToken, new RefreshTokenCommand(registerResult!.Token, registerResult.RefreshToken));
         var refreshTokenResult = await response.Content.ReadFromJsonAsync<AuthenticationFailedResult>();
 
         // Assert

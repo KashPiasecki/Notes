@@ -53,10 +53,10 @@ public class IntegrationTest
     {
         var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
-        var testPassword = $"Password{testUsername}";
+        var testPassword = Fixture.Create<string>();
         var response =
             await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
         var registrationResponse = await response.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
-        return registrationResponse.Token;
+        return registrationResponse!.Token;
     }
 }

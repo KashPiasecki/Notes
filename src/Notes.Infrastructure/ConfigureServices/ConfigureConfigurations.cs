@@ -14,6 +14,7 @@ public static class ConfigureConfigurations
         serviceCollection.AddSingleton(notesConfiguration.Database);
         serviceCollection.AddSingleton(notesConfiguration.Swagger);
         serviceCollection.AddSingleton(notesConfiguration.JwtSettings);
+        serviceCollection.AddSingleton(notesConfiguration.Redis);
         return notesConfiguration;
     }
 }
