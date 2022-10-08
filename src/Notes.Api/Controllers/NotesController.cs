@@ -9,6 +9,7 @@ using Notes.Application.CQRS.Note.Queries;
 using Notes.Application.CQRS.Note.Queries.GetAll;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.CQRS.Note.Queries.GetByUserId;
+using Notes.Application.Pagination;
 using Notes.Domain.Contracts;
 using Notes.Infrastructure.Cache;
 using Notes.Infrastructure.Utility.Extensions;
@@ -33,13 +34,18 @@ public class NotesController : ControllerBase
     [Cached(300)]
     [Authorize(Roles = RoleNames.Admin)]
     [SwaggerOperation(Summary = "Get all notes", Description = "Requires admin user role")]
-    [SwaggerResponse(200, Type = typeof(IEnumerable<GetNoteDto>), Description = "Get all notes")]
+    [SwaggerResponse(200, Type = typeof(PagedResponse<GetNoteDto>), Description = "Get all notes")]
     [SwaggerResponse(401, Description = "Unauthorized operation")]
     [SwaggerResponse(403, Description = "Forbidden operation")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
-    public async Task<ActionResult<IEnumerable<GetNoteDto>>> GetAll()
+    public async Task<ActionResult<PagedResponse<GetNoteDto>>> GetAll(
+        [FromQuery, SwaggerParameter(Description="Default value 10", Required = false)] int pageSize,
+        [FromQuery, SwaggerParameter(Description="Default value 1", Required = false)] int pageNumber)
     {
-        var result = await _mediator.Send(new GetAllNotesQuery());
+        var validFilter = new PaginationFilter(pageNumber, pageSize);
+        var route = Request.Path.Value;
+        var request = new GetPagedNotesQuery(route!, validFilter);
+        var result = await _mediator.Send(request);
         return Ok(result);
     }
 
@@ -103,12 +109,18 @@ public class NotesController : ControllerBase
     [HttpGet(ApiRoutes.User)]
     [Cached(300)]
     [SwaggerOperation(Summary = "Get notes for user")]
-    [SwaggerResponse(200, Type = typeof(IEnumerable<GetNoteDto>), Description = "Get notes for user")]
+    [SwaggerResponse(200, Type = typeof(PagedResponse<GetNoteDto>), Description = "Get notes for user")]
     [SwaggerResponse(401, Description = "Unauthorized Operation")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
-    public async Task<ActionResult<IEnumerable<GetNoteDto>>> GetForUser()
+    public async Task<ActionResult<PagedResponse<GetNoteDto>>> GetForUser(
+        [FromQuery, SwaggerParameter(Description="Default value 10", Required = false)] int pageSize,
+        [FromQuery, SwaggerParameter(Description="Default value 1", Required = false)] int pageNumber)
     {
-        var result = await _mediator.Send(new GetNotesForUserQuery(HttpContext.GetUserId()));
+        var userId = HttpContext.GetUserId();
+        var validFilter = new PaginationFilter(pageNumber, pageSize);
+        var route = Request.Path.Value;
+        var request = new GetPagedNotesForUserQuery(userId, validFilter, route!);
+        var result = await _mediator.Send(request);
         return Ok(result);
     }
 

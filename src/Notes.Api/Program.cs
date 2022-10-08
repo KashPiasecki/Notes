@@ -14,7 +14,7 @@ serviceCollection.AddControllers();
 serviceCollection.AddTransient<ExceptionHandlingMiddleware>();
 
 // ServiceCollection - Application
-serviceCollection.AddApplication();
+serviceCollection.AddApplicationServices();
 serviceCollection.AddCQRS();
 
 // ServiceCollection - Infrastructure

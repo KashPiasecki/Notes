@@ -10,7 +10,8 @@ public class NoteProfile : Profile
 {
     public NoteProfile()
     {
-        CreateMap<Note, GetNoteDto>().ReverseMap();
+        CreateMap<Note, GetNoteDto>()
+            .ForMember(prop => prop.UserName, expression => expression.MapFrom(x => x.User.UserName));
         CreateMap<CreateNoteCommand, Note>()
             .ForMember(prop => prop.CreationDate,  expression => expression.MapFrom(s => DateTime.UtcNow))
             .ForMember(prop => prop.LastTimeModified,  expression => expression.MapFrom(s => DateTime.UtcNow));
