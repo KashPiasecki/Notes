@@ -7,7 +7,9 @@ using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;
 using Notes.Application.CQRS.Note.Commands.Update;
 using Notes.Application.CQRS.Note.Queries;
+using Notes.Domain.Contracts;
 using NUnit.Framework;
+using ApiRoutes = Notes.Api.IntegrationTests.Utility.ApiRoutes;
 
 namespace Notes.Api.IntegrationTests.Controllers;
 
@@ -33,13 +35,12 @@ public class NotesControllerTests : IntegrationTest
 
         // Act
         var response = await TestClient.GetAsync(ApiRoutes.Notes.User.Get);
-        var notes = await response.Content.ReadFromJsonAsync<List<GetNoteDto>>();
+        var notes = await response.Content.ReadFromJsonAsync<PagedResponse<GetNoteDto>>();
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        notes.Should().BeEmpty();
+        notes?.Data.Should().BeEmpty();
     }
-
 
     [Test]
     public async Task GetAll_WithSomeData_ReturnsOk()
@@ -52,14 +53,14 @@ public class NotesControllerTests : IntegrationTest
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
         var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
         var response = await TestClient.GetAsync(ApiRoutes.Notes.User.Get);
-        var notes = await response.Content.ReadFromJsonAsync<List<GetNoteDto>>();
+        var notes = await response.Content.ReadFromJsonAsync<PagedResponse<GetNoteDto>>();
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var note = notes?.SingleOrDefault(x => x.Id == postResult?.Id);
+        var note = notes?.Data.SingleOrDefault(x => x.Id == postResult?.Id);
         note?.Title.Should().Be(createNoteCommand.Title);
         note?.Content.Should().Be(createNoteCommand.Content);
-        notes.Should().NotBeEmpty();
+        notes?.Data.Should().NotBeEmpty();
     }
 
     [Test]

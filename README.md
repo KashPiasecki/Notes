@@ -13,7 +13,7 @@
 * FluentValidation <span style="color:lightgreen"> ✓</span> 
 * Swagger Documentation <span style="color:lightgreen"> ✓</span> 
 * Redis for cache <span style="color:lightgreen"> ✓</span>
-* Pagination
+* Pagination <span style="color:lightgreen"> ✓</span>
 * HealthChecks
 * Filtering
 * CI/CD with GitHub actions

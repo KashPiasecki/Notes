@@ -19,7 +19,7 @@ public class IntegrationTest
     protected HttpClient TestClient;
     protected Fixture Fixture;
     private IServiceProvider _serviceProvider;
-    
+
     [SetUp]
     public void SetUp()
     {
@@ -44,19 +44,21 @@ public class IntegrationTest
         context.Database.EnsureDeleted();
     }
 
-    protected async Task AuthenticateAsync()
+    protected async Task<AuthenticationSuccessResult> AuthenticateAsync()
     {
-        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
+        var registrationResponse = await GetJwtAsync();
+        TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", registrationResponse.Token);
+        return registrationResponse;
     }
 
-    private async Task<string> GetJwtAsync()
+    private async Task<AuthenticationSuccessResult> GetJwtAsync()
     {
         var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
-        var testPassword = Fixture.Create<string>();
+        var testPassword = Fixture.CreateValidPassword();
         var response =
             await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
         var registrationResponse = await response.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
-        return registrationResponse!.Token;
+        return registrationResponse!;
     }
 }
