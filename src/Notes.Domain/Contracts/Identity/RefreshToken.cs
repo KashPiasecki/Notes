@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
-namespace Notes.Domain.Identity;
+namespace Notes.Domain.Contracts.Identity;
 
 public class RefreshToken
 {

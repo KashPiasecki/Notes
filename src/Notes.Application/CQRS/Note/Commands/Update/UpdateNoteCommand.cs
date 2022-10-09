@@ -3,9 +3,9 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces;
 using Notes.Application.CQRS.Note.Queries;
+using Notes.Domain.Contracts.Exceptions;
 
 namespace Notes.Application.CQRS.Note.Commands.Update;
 

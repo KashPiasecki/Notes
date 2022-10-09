@@ -1,4 +1,4 @@
-namespace Notes.Application.Common.Exceptions;
+namespace Notes.Domain.Contracts.Exceptions;
 
 public class NotFoundException : Exception
 {

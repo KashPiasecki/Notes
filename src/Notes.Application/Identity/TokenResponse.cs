@@ -1,4 +1,4 @@
-using Notes.Domain.Identity;
+using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.Identity;
 

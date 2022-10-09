@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Notes.Api.IntegrationTests.Utility;
 using Notes.Application.CQRS.Identity.Commands;
-using Notes.Domain.Identity;
+using Notes.Domain.Contracts.Identity;
 using Notes.Infrastructure.Persistence;
 using NUnit.Framework;
 

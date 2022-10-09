@@ -7,6 +7,6 @@ public static class ConfigureAutoMapper
 {
     public static void AddAutoMapper(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddAutoMapper(typeof(NoteProfile));
+        serviceCollection.AddAutoMapper(typeof(NotesProfile));
     }
 }

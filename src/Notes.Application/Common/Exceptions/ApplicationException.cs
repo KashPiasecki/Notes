@@ -1,10 +1,11 @@
-namespace Notes.Application.Common.Exceptions;
+namespace Notes.Domain.Contracts.Exceptions;
 
 public abstract class ApplicationException : Exception
 {
-    protected ApplicationException(string title, string message)
-        : base(message) =>
-        Title = title;
-
     public string Title { get; init; }
+
+    protected ApplicationException(string title, string message) : base(message)
+    {
+        Title = title;
+    }
 }

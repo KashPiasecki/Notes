@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Notes.Application.Common.Interfaces;
+using Notes.Domain.Contracts.Identity;
 using Notes.Domain.Entities;
-using Notes.Domain.Identity;
 
 namespace Notes.Infrastructure.Persistence;
 

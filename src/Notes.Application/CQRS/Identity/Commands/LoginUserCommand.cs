@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
 using Notes.Application.Identity;
-using Notes.Domain.Identity;
+using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;
 

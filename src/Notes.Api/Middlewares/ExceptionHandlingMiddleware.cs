@@ -1,8 +1,8 @@
 using System.Text.Json;
-using Notes.Application.Common.Exceptions;
 using Notes.Domain.Contracts;
-using ApplicationException = Notes.Application.Common.Exceptions.ApplicationException;
-using ValidationException = Notes.Application.Common.Exceptions.ValidationException;
+using Notes.Domain.Contracts.Exceptions;
+using ApplicationException = Notes.Domain.Contracts.Exceptions.ApplicationException;
+using ValidationException = Notes.Domain.Contracts.Exceptions.ValidationException;
 
 namespace Notes.Api.Middlewares;
 

@@ -6,7 +6,7 @@ using FluentAssertions;
 using Notes.Api.IntegrationTests.Utility;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Contracts;
-using Notes.Domain.Identity;
+using Notes.Domain.Contracts.Identity;
 using NUnit.Framework;
 using ApiRoutes = Notes.Api.IntegrationTests.Utility.ApiRoutes;
 

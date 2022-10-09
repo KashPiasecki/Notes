@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Contracts;
-using Notes.Domain.Identity;
+using Notes.Domain.Contracts.Identity;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Notes.Api.Controllers;

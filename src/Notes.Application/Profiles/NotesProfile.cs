@@ -6,9 +6,9 @@ using Notes.Domain.Entities;
 
 namespace Notes.Application.Profiles;
 
-public class NoteProfile : Profile
+public class NotesProfile : Profile
 {
-    public NoteProfile()
+    public NotesProfile()
     {
         CreateMap<Note, GetNoteDto>()
             .ForMember(prop => prop.UserName, expression => expression.MapFrom(x => x.User.UserName));

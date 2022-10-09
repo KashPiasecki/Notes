@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Notes.Domain.Contracts.Identity;
 using Notes.Domain.Entities;
-using Notes.Domain.Identity;
 
 namespace Notes.Application.Common.Interfaces;
 

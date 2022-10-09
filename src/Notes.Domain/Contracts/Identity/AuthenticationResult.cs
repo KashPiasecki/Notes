@@ -1,4 +1,4 @@
-namespace Notes.Domain.Identity;
+namespace Notes.Domain.Contracts.Identity;
 
 public abstract class AuthenticationResult
 {
