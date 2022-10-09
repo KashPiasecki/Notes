@@ -12,10 +12,10 @@ public class PagedResponse<T>
     public Uri FirstPage { get; set; }
     public Uri LastPage { get; set; }
 
-    public PagedResponse(IEnumerable<T> data, int pageSize, int pageNumber)
+    public PagedResponse(IEnumerable<T> data, int pageNumber, int pageSize)
     {
         Data = data;
-        PageSize = pageSize;
         PageNumber = pageNumber;
+        PageSize = pageSize;
     }
 }

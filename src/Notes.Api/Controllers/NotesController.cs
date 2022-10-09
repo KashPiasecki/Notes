@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ using Notes.Application.CQRS.Note.Queries;
 using Notes.Application.CQRS.Note.Queries.GetAll;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.CQRS.Note.Queries.GetByUserId;
+using Notes.Application.Filtering;
 using Notes.Application.Pagination;
 using Notes.Domain.Contracts;
 using Notes.Infrastructure.Cache;
@@ -39,12 +41,13 @@ public class NotesController : ControllerBase
     [SwaggerResponse(403, Description = "Forbidden operation")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
     public async Task<ActionResult<PagedResponse<GetNoteDto>>> GetAll(
-        [FromQuery, SwaggerParameter(Description="Default value 10", Required = false)] int pageSize,
-        [FromQuery, SwaggerParameter(Description="Default value 1", Required = false)] int pageNumber)
+        [FromQuery] PaginationFilterQuery paginationFilterQuery,
+        [FromQuery] NoteFilterQuery noteFilterQuery)
     {
-        var validFilter = new PaginationFilter(pageNumber, pageSize);
+        var validPaginationFilter = new PaginationFilter(paginationFilterQuery.PageNumber, paginationFilterQuery.PageSize);
         var route = Request.Path.Value;
-        var request = new GetPagedNotesQuery(route!, validFilter);
+        var validNoteFilter = new NoteFilter(noteFilterQuery);
+        var request = new GetPagedNotesQuery(route!, validPaginationFilter, validNoteFilter);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
@@ -113,13 +116,14 @@ public class NotesController : ControllerBase
     [SwaggerResponse(401, Description = "Unauthorized Operation")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
     public async Task<ActionResult<PagedResponse<GetNoteDto>>> GetForUser(
-        [FromQuery, SwaggerParameter(Description="Default value 10", Required = false)] int pageSize,
-        [FromQuery, SwaggerParameter(Description="Default value 1", Required = false)] int pageNumber)
+        [FromQuery] PaginationFilterQuery paginationFilterQuery,
+        [FromQuery] NoteFilterQuery noteFilterQuery)
     {
         var userId = HttpContext.GetUserId();
-        var validFilter = new PaginationFilter(pageNumber, pageSize);
+        var validPaginationFilter = new PaginationFilter(paginationFilterQuery.PageSize, paginationFilterQuery.PageNumber);
         var route = Request.Path.Value;
-        var request = new GetPagedNotesForUserQuery(userId, validFilter, route!);
+        var validNoteFilter = new NoteFilter(noteFilterQuery);
+        var request = new GetPagedNotesForUserQuery(userId, validPaginationFilter, route!, validNoteFilter);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
