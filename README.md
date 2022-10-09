@@ -14,7 +14,7 @@
 * Swagger Documentation <span style="color:lightgreen"> ✓</span> 
 * Redis for cache <span style="color:lightgreen"> ✓</span>
 * Pagination <span style="color:lightgreen"> ✓</span>
-* HealthChecks
+* HealthChecks <span style="color:lightgreen"> ✓</span>
 * Filtering
 * CI/CD with GitHub actions
 

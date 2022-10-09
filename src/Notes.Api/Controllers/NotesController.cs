@@ -31,7 +31,7 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet]
-    [Cached(300)]
+    [Cached(30)]
     [Authorize(Roles = RoleNames.Admin)]
     [SwaggerOperation(Summary = "Get all notes", Description = "Requires admin user role")]
     [SwaggerResponse(200, Type = typeof(PagedResponse<GetNoteDto>), Description = "Get all notes")]
@@ -50,7 +50,7 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [Cached(300)]
+    [Cached(30)]
     [Authorize(Roles = RoleNames.Admin)]
     [SwaggerOperation(Summary = "Get any note by id", Description = "Requires admin user role")]
     [SwaggerResponse(200, Type = typeof(GetNoteDto), Description = "Get single note")]
@@ -107,7 +107,7 @@ public class NotesController : ControllerBase
     }
 
     [HttpGet(ApiRoutes.User)]
-    [Cached(300)]
+    [Cached(30)]
     [SwaggerOperation(Summary = "Get notes for user")]
     [SwaggerResponse(200, Type = typeof(PagedResponse<GetNoteDto>), Description = "Get notes for user")]
     [SwaggerResponse(401, Description = "Unauthorized Operation")]

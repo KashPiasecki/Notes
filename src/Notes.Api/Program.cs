@@ -12,6 +12,7 @@ var serviceCollection = builder.Services;
 var notesConfiguration = serviceCollection.AddConfigurations(builder.Configuration);
 serviceCollection.AddControllers();
 serviceCollection.AddTransient<ExceptionHandlingMiddleware>();
+serviceCollection.AddHealthCheck();
 
 // ServiceCollection - Application
 serviceCollection.AddApplicationServices();
@@ -29,6 +30,7 @@ serviceCollection.AddSwagger(notesConfiguration.Swagger);
 var app = builder.Build();
 app.MigrateDatabase();
 app.UseSwagger(notesConfiguration.Swagger);
+app.UseHealthCheck();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
