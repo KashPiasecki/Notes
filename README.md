@@ -1,3 +1,6 @@
+# Status #
+[![.NET](https://github.com/KashPiasecki/Notes/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/KashPiasecki/Notes/actions/workflows/ci.yaml)
+
 # About #
 ### This project was created to try out <b> .NET 6 StandardApi</b> clean architecture approach. Technologies/frameworks: ###
 * Serilog <span style="color:lightgreen"> ✓</span> 
@@ -15,8 +18,8 @@
 * Redis for cache <span style="color:lightgreen"> ✓</span>
 * Pagination <span style="color:lightgreen"> ✓</span>
 * HealthChecks <span style="color:lightgreen"> ✓</span>
-* Filtering
-* CI/CD with GitHub actions
+* Filtering <span style="color:lightgreen"> ✓</span>
+* CI with GitHub actions <span style="color:lightgreen"> ✓</span>
 
 # How to run # 
 

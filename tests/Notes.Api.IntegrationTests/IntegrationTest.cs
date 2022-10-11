@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net.Mail;
 using AutoFixture;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ public class IntegrationTest
         var appFactory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
             {
+                builder.UseEnvironment("tests");
                 builder.ConfigureServices(services =>
                 {
                     services.RemoveAll(typeof(DbContextOptions<DataContext>));

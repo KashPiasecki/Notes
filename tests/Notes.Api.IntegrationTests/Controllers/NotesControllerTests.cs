@@ -32,11 +32,11 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-
+    
         // Act
         var response = await TestClient.GetAsync(ApiRoutes.Notes.User.Get);
         var notes = await response.Content.ReadFromJsonAsync<PagedResponse<GetNoteDto>>();
-
+    
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         notes?.Data.Should().BeEmpty();
@@ -48,13 +48,13 @@ public class NotesControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
         var createNoteCommand = Fixture.Create<CreateNoteCommand>();
-
+    
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
         var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
         var response = await TestClient.GetAsync(ApiRoutes.Notes.User.Get);
         var notes = await response.Content.ReadFromJsonAsync<PagedResponse<GetNoteDto>>();
-
+    
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var note = notes?.Data.SingleOrDefault(x => x.Id == postResult?.Id);
@@ -69,13 +69,13 @@ public class NotesControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
         var createNoteCommand = Fixture.Create<CreateNoteCommand>();
-
+    
         // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
         var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
         var response = await TestClient.GetAsync(ApiRoutes.Notes.GetById.Replace("<id>", postResult?.Id.ToString()));
         var note = await response.Content.ReadFromJsonAsync<GetNoteDto>();
-
+    
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         note?.Title.Should().Be(createNoteCommand.Title);
@@ -88,10 +88,10 @@ public class NotesControllerTests : IntegrationTest
     {
         // Arrange
         await AuthenticateAsync();
-
+    
         // Act
         var response = await TestClient.GetAsync(ApiRoutes.Notes.GetById.Replace("<id>", Fixture.Create<string>()));
-
+    
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
