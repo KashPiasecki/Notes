@@ -1,0 +1,57 @@
+name: 'Manual Run'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ubuntuVersion:
+        description: 'Ubuntu version'
+        required: true
+        default: 'ubuntu-latest'
+        type: choice
+        options:
+          - 'ubuntu-latest'
+          - 'ubuntu-22.04'
+          - 'ubuntu-20.04'
+      runUnitTests:
+        description: 'Run unit tests'
+        required: true
+        type: boolean
+        default: true
+      runIntegrationTests:
+        description: 'Run integration tests'
+        required: true
+        type: boolean
+        default: true 
+
+jobs:
+  build:
+    name: Build Project
+    runs-on: ${{ inputs.ubuntuVersion }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore -c Release
+
+  # unitTest:
+  #   name: Run Unit Tests
+  #   if: ${{ inputs.runUnitTests }} 
+  #   runs-on: ${{ inputs.ubuntuVersion }}
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Test
+  #     run: dotnet test tests/unitTests -c Release
+
+  integrationTest:
+    name: Run Integration Tests
+    if: ${{ inputs.runIntegrationTests }}
+    runs-on: ${{ inputs.ubuntuVersion }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test
+      run: dotnet test tests/Notes.Api.IntegrationTests -c Release

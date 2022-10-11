@@ -1,15 +1,15 @@
-name: .NET Continuous Integration
+name: 'Continuous Integration'
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
 
+
 jobs:
   build:
-
+    name: Build Project
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -19,6 +19,20 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -c Release
+
+  # unitTest:
+  #   name: Run Unit Tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Test
+  #     run: dotnet test tests/unitTests -c Release
+
+  integrationTest:
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
     - name: Test
-      run: dotnet test --no-build
+      run: dotnet test tests/Notes.Api.IntegrationTests -c Release

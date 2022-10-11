@@ -1,25 +1,27 @@
 # Status #
 [![.NET](https://github.com/KashPiasecki/Notes/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/KashPiasecki/Notes/actions/workflows/ci.yaml)
 
+[![Scheduled Tests Run](https://github.com/KashPiasecki/Notes/actions/workflows/periodical.yaml/badge.svg)](https://github.com/KashPiasecki/Notes/actions/workflows/periodical.yaml)
+
 # About #
 ### This project was created to try out <b> .NET 6 StandardApi</b> clean architecture approach. Technologies/frameworks: ###
-* Serilog <span style="color:lightgreen"> ✓</span> 
-* Kibana logging platform <span style="color:lightgreen"> ✓</span> 
-* Docker contenerization <span style="color:lightgreen"> ✓</span> 
-* EntityFramework Core <span style="color:lightgreen"> ✓</span> 
-* Postgres SQL <span style="color:lightgreen"> ✓</span> 
-* CQRS with MediatR <span style="color:lightgreen"> ✓</span> 
-* JWT Role Authorization <span style="color:lightgreen"> ✓</span> 
+* Serilog ✅
+* Kibana logging platform ✅
+* Docker contenerization ✅
+* EntityFramework Core ✅
+* Postgres SQL ✅
+* CQRS with MediatR ✅
+* JWT Role Authorization ✅
 * Unit tests
-* Integrated tests <span style="color:lightgreen"> ✓</span> 
-* Automapper <span style="color:lightgreen"> ✓</span> 
-* FluentValidation <span style="color:lightgreen"> ✓</span> 
-* Swagger Documentation <span style="color:lightgreen"> ✓</span> 
-* Redis for cache <span style="color:lightgreen"> ✓</span>
-* Pagination <span style="color:lightgreen"> ✓</span>
-* HealthChecks <span style="color:lightgreen"> ✓</span>
-* Filtering <span style="color:lightgreen"> ✓</span>
-* CI with GitHub actions <span style="color:lightgreen"> ✓</span>
+* Integrated tests ✅
+* Automapper ✅
+* FluentValidation ✅
+* Swagger Documentation ✅
+* Redis for cache ✅
+* Pagination ✅
+* HealthChecks ✅
+* Filtering ✅
+* CI with GitHub actions ✅
 
 # How to run # 
 
