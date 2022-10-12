@@ -1,42 +1,87 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
-using Notes.Application.Filtering;
-using Notes.Application.Pagination;
+using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Application.CQRS.Filtering;
+using Notes.Application.CQRS.Pagination;
 using Notes.Domain.Contracts;
 
 namespace Notes.Application.CQRS.Note.Queries.GetAll;
 
-public record GetPagedNotesQuery(string Route, PaginationFilter PaginationFilter, NoteFilter NoteFilter) : IRequest<PagedResponse<GetNoteDto>>;
+public record GetPagedNotesQuery(string Route, PaginationFilterQuery PaginationFilterQuery, NoteFilterQuery NoteFilterQuery) : IRequest<PagedResponse<GetNoteDto>>;
 
 public class GetAllNotesQueryHandler : BaseEntityHandler<GetAllNotesQueryHandler>, IRequestHandler<GetPagedNotesQuery, PagedResponse<GetNoteDto>>
 {
     private readonly IPaginationHelper _paginationHelper;
+    private readonly INoteRepository _notesRepository;
+    
 
-    public GetAllNotesQueryHandler(IPaginationHelper paginationHelper, IDataContext dataContext, IMapper mapper,
-        ILogger<GetAllNotesQueryHandler> logger) : base(dataContext, mapper, logger)
+    public GetAllNotesQueryHandler(INoteRepository notesRepository
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        , IPaginationHelper paginationHelper, IDataContext dataContext,
+        IMapper mapper, ILogger<GetAllNotesQueryHandler> logger) : base(dataContext, mapper, logger)
     {
         _paginationHelper = paginationHelper;
+        _notesRepository = notesRepository;
     }
 
     public async Task<PagedResponse<GetNoteDto>> Handle(GetPagedNotesQuery request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Request to get all notes");
-        var notes = await DataContext.Notes.Include(x => x.User)
-            .Where(x => x.Title.ToLower().Contains(request.NoteFilter.Title.ToLower()))
-            .Where(x => x.Content.ToLower().Contains(request.NoteFilter.Content.ToLower()))
-            .Skip((request.PaginationFilter.PageNumber - 1) * request.PaginationFilter.PageSize)
-            .Take(request.PaginationFilter.PageSize)
-            .ToListAsync(cancellationToken);
+        var paginationFilter = _paginationHelper.ValidateQuery(request.PaginationFilterQuery);
+        var notes = await _notesRepository.GetNotesAsync(paginationFilter, request.NoteFilterQuery, cancellationToken);
         var notesDto = Mapper.Map<IEnumerable<GetNoteDto>>(notes);
-        var totalRecords = await DataContext.Notes
-            .AsNoTracking()
-            .Where(x => x.Title.ToLower().Contains(request.NoteFilter.Title.ToLower()))
-            .Where(x => x.Content.ToLower().Contains(request.NoteFilter.Content.ToLower()))
-            .CountAsync(cancellationToken);
-        var pagedResponse = _paginationHelper.CreatePagedReponse(notesDto, request.PaginationFilter, totalRecords, request.Route);
+        var totalRecords = await _notesRepository.CountAsync(request.NoteFilterQuery, cancellationToken);
+        var pagedResponse = _paginationHelper.CreatePagedResponse(notesDto, paginationFilter, totalRecords, request.Route);
         Logger.LogInformation("Successfully retrieved all notes");
         return pagedResponse;
     }

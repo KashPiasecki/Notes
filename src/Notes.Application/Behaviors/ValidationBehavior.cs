@@ -1,6 +1,6 @@
 using FluentValidation;
 using MediatR;
-using ValidationException = Notes.Domain.Contracts.Exceptions.ValidationException;
+using ValidationException = Notes.Application.Common.Exceptions.ValidationException;
 
 namespace Notes.Application.Behaviors;
 

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Notes.Application.CQRS.Filtering;
 using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;
 using Notes.Application.CQRS.Note.Commands.Update;
@@ -9,8 +10,7 @@ using Notes.Application.CQRS.Note.Queries;
 using Notes.Application.CQRS.Note.Queries.GetAll;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.CQRS.Note.Queries.GetByUserId;
-using Notes.Application.Filtering;
-using Notes.Application.Pagination;
+using Notes.Application.CQRS.Pagination;
 using Notes.Domain.Contracts;
 using Notes.Infrastructure.Cache;
 using Notes.Infrastructure.Utility.Extensions;
@@ -43,10 +43,8 @@ public class NotesController : ControllerBase
         [FromQuery] PaginationFilterQuery paginationFilterQuery,
         [FromQuery] NoteFilterQuery noteFilterQuery)
     {
-        var validPaginationFilter = new PaginationFilter(paginationFilterQuery.PageNumber, paginationFilterQuery.PageSize);
         var route = Request.Path.Value;
-        var validNoteFilter = new NoteFilter(noteFilterQuery);
-        var request = new GetPagedNotesQuery(route!, validPaginationFilter, validNoteFilter);
+        var request = new GetPagedNotesQuery(route!, paginationFilterQuery, noteFilterQuery);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
@@ -119,10 +117,8 @@ public class NotesController : ControllerBase
         [FromQuery] NoteFilterQuery noteFilterQuery)
     {
         var userId = HttpContext.GetUserId();
-        var validPaginationFilter = new PaginationFilter(paginationFilterQuery.PageSize, paginationFilterQuery.PageNumber);
         var route = Request.Path.Value;
-        var validNoteFilter = new NoteFilter(noteFilterQuery);
-        var request = new GetPagedNotesForUserQuery(userId, validPaginationFilter, route!, validNoteFilter);
+        var request = new GetPagedNotesForUserQuery(userId, paginationFilterQuery, route!, noteFilterQuery);
         var result = await _mediator.Send(request);
         return Ok(result);
     }

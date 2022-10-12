@@ -1,6 +1,6 @@
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Notes.Application.Pagination;
+namespace Notes.Application.CQRS.Pagination;
 
 public class PaginationFilterQuery
 {

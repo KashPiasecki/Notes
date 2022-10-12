@@ -1,6 +1,6 @@
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Notes.Application.Filtering;
+namespace Notes.Application.CQRS.Filtering;
 
 public class NoteFilterQuery
 {

@@ -4,10 +4,10 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces;
 using Notes.Domain.Configurations;
 using Notes.Domain.Contracts;
-using Notes.Domain.Contracts.Exceptions;
 using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.Identity;

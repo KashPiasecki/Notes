@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.WebUtilities;
+using Notes.Application.Common.Interfaces;
+using Notes.Domain.Filters;
 
-namespace Notes.Application.Pagination;
-
-public interface IUriService
-{
-    public Uri GetPageUri(PaginationFilter filter, string route);
-}
+namespace Notes.Infrastructure.Pagination;
 
 public class UriService : IUriService
 {

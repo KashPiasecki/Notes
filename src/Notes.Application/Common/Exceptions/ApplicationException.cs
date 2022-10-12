@@ -1,4 +1,4 @@
-namespace Notes.Domain.Contracts.Exceptions;
+namespace Notes.Application.Common.Exceptions;
 
 public abstract class ApplicationException : Exception
 {
