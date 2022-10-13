@@ -1,4 +1,4 @@
-namespace Notes.Domain.Contracts;
+namespace Notes.Domain.Contracts.Entities;
 
 public class HealthCheck
 {

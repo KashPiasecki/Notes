@@ -1,33 +1,33 @@
-using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Exceptions;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Repositories;
 
 namespace Notes.Application.CQRS.Note.Commands.Delete;
 
 public record DeleteNoteForUserCommand(Guid Id, string UserId) : IRequest;
 
-public class DeleteNoteForUserCommandHandler : BaseEntityHandler<DeleteNoteForUserCommandHandler>, IRequestHandler<DeleteNoteForUserCommand>
+public class DeleteNoteForUserCommandHandlerWithMapping : BaseHandler<DeleteNoteForUserCommandHandlerWithMapping>,
+    IRequestHandler<DeleteNoteForUserCommand>
 {
-    public DeleteNoteForUserCommandHandler(IDataContext dataContext, IMapper mapper, ILogger<DeleteNoteForUserCommandHandler> logger) : base(dataContext, mapper, logger)
+    public DeleteNoteForUserCommandHandlerWithMapping(IUnitOfWork unitOfWork, ILogger<DeleteNoteForUserCommandHandlerWithMapping> logger) :
+        base(unitOfWork, logger)
     {
     }
 
     public async Task<Unit> Handle(DeleteNoteForUserCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Request to delete note {NoteId} for user {UserId}", request.Id, request.UserId);
-        var note = await DataContext.Notes.SingleOrDefaultAsync(x => x.UserId.Equals(request.UserId) && x.Id.Equals(request.Id),
-            cancellationToken: cancellationToken);
+        var note = await UnitOfWork.Notes.GetByIdForUserAsync(request.UserId, request.Id, cancellationToken);
         if (note is null)
         {
-            Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
+            Logger.LogError("Failed to get note with id: {NoteId}, it either doesn't exist or doesn't belong to user {UserId}", request.Id,
+                request.UserId);
             throw new NotFoundException("Note with given id does not exist");
         }
-        
-        DataContext.Notes.Remove(note);
-        await DataContext.SaveChangesAsync(cancellationToken);
+
+        UnitOfWork.Notes.Remove(note);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
         Logger.LogInformation("Successfully deleted note {NoteId} for user {UserId}", request.Id, request.UserId);
         return Unit.Value;
     }

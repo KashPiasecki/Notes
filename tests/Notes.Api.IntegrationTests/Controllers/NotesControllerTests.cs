@@ -7,7 +7,7 @@ using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;
 using Notes.Application.CQRS.Note.Commands.Update;
 using Notes.Application.CQRS.Note.Queries;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Responses;
 using NUnit.Framework;
 using ApiRoutes = Notes.Api.IntegrationTests.Utility.ApiRoutes;
 
@@ -193,10 +193,10 @@ public class NotesControllerTests : IntegrationTest
         // Arrange
         await AuthenticateAsync();
         var createNoteCommand = Fixture.Create<CreateNoteCommand>();
-
-        // Act
         var postResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Notes.Post, createNoteCommand);
         var postResult = await postResponse.Content.ReadFromJsonAsync<GetNoteDto>();
+
+        // Act
         var deleteNoteCommand = Fixture.Build<DeleteNoteCommand>()
             .With(x => x.Id, postResult?.Id)
             .Create();

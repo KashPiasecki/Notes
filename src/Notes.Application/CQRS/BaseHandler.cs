@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Repositories;
 
 namespace Notes.Application.CQRS;
 
 public abstract class BaseHandler<T>
 {
-    protected readonly IDataContext DataContext;
+    protected readonly IUnitOfWork UnitOfWork;
     protected readonly ILogger<T> Logger;
 
-    protected  BaseHandler(IDataContext dataContext, ILogger<T> logger)
+    protected  BaseHandler(IUnitOfWork unitOfWork, ILogger<T> logger)
     {
-        DataContext = dataContext;
         Logger = logger;
+        UnitOfWork = unitOfWork;
     }
 }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Notes.Application.Common.Interfaces;
-using Notes.Domain.Filters;
+using Notes.Domain.Contracts.Filters;
 
 namespace Notes.Infrastructure.Pagination;
 

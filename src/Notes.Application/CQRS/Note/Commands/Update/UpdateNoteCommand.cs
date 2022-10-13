@@ -1,10 +1,9 @@
 using AutoMapper;
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Exceptions;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Queries;
 
 namespace Notes.Application.CQRS.Note.Commands.Update;
@@ -20,16 +19,16 @@ public class UpdateNoteCommandValidator : AbstractValidator<UpdateNoteCommand>
     }
 }
 
-public class UpdateNoteCommandHandler : BaseEntityHandler<UpdateNoteCommandHandler>, IRequestHandler<UpdateNoteCommand, GetNoteDto>
+public class UpdateNoteCommandHandlerWithMapping : BaseHandlerWithMapping<UpdateNoteCommandHandlerWithMapping>, IRequestHandler<UpdateNoteCommand, GetNoteDto>
 {
-    public UpdateNoteCommandHandler(IDataContext dataContext, IMapper mapper, ILogger<UpdateNoteCommandHandler> logger) : base(dataContext, mapper, logger)
+    public UpdateNoteCommandHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateNoteCommandHandlerWithMapping> logger) : base(unitOfWork, mapper, logger)
     {
     }
 
     public async Task<GetNoteDto> Handle(UpdateNoteCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Request to update note {NoteId}", request.Id);
-        var note = await DataContext.Notes.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+        var note = await UnitOfWork.Notes.GetByIdAsync(request.Id, cancellationToken);
         if (note is null)
         {
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
@@ -37,7 +36,7 @@ public class UpdateNoteCommandHandler : BaseEntityHandler<UpdateNoteCommandHandl
         }
         
         Mapper.Map(request, note);
-        await DataContext.SaveChangesAsync(cancellationToken);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
         Logger.LogInformation("Successfully updated note {NoteId}", request.Id);
         return Mapper.Map<GetNoteDto>(note);
     }

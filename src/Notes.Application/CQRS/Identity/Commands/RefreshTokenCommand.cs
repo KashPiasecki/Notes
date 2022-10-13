@@ -1,11 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
-using Notes.Application.Identity;
-using Notes.Domain.Contracts;
+using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;
@@ -16,9 +15,8 @@ public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler
 {
     private readonly ITokenHandler _tokenHandler;
     private readonly UserManager<IdentityUser> _userManager;
-
-    public RefreshTokenCommandHandler(IDataContext dataContext, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager,
-        ILogger<RefreshTokenCommandHandler> logger) : base(dataContext, logger)
+    
+    public RefreshTokenCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager, ILogger<RefreshTokenCommandHandler> logger) : base(unitOfWork, logger)
     {
         _tokenHandler = tokenHandler;
         _userManager = userManager;
@@ -43,8 +41,7 @@ public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler
         }
 
         var tokenId = validatedToken.Claims.Single(x => x.Type.Equals(JwtClaimNames.Jti)).Value;
-        var storedRefreshToken =
-            await DataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token.Equals(request.RefreshToken), cancellationToken: cancellationToken);
+        var storedRefreshToken = await UnitOfWork.RefreshTokens.GetAsync(request.RefreshToken, cancellationToken);
         if (storedRefreshToken is null || storedRefreshToken.JwtId != tokenId)
         {
             Logger.LogError("Refresh token doesn't exist");
@@ -70,8 +67,8 @@ public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler
         }
 
         storedRefreshToken.Used = true;
-        DataContext.RefreshTokens.Update(storedRefreshToken);
-        await DataContext.SaveChangesAsync(cancellationToken);
+        UnitOfWork.RefreshTokens.UpdateAsync(storedRefreshToken);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type.Equals(JwtClaimNames.UserId)).Value);
         var tokenResponse = await _tokenHandler.GenerateToken(user);

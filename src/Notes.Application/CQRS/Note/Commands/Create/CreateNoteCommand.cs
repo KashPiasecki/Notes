@@ -3,18 +3,17 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Queries;
 
 namespace Notes.Application.CQRS.Note.Commands.Create;
 
 public record CreateNoteCommand(string Title, string Content) : IRequest<GetNoteDto>
 {
-    [JsonIgnore]
-    public string? UserId { get; set; }
+    [JsonIgnore] public string? UserId { get; set; }
 }
 
-public sealed class CreateNoteCommandValidator : AbstractValidator<CreateNoteCommand>
+public class CreateNoteCommandValidator : AbstractValidator<CreateNoteCommand>
 {
     public CreateNoteCommandValidator()
     {
@@ -23,9 +22,10 @@ public sealed class CreateNoteCommandValidator : AbstractValidator<CreateNoteCom
     }
 }
 
-public class CreateNoteCommandHandler : BaseEntityHandler<CreateNoteCommandHandler>, IRequestHandler<CreateNoteCommand, GetNoteDto>
+public class CreateNoteCommandHandlerWithMapping : BaseHandlerWithMapping<CreateNoteCommandHandlerWithMapping>, IRequestHandler<CreateNoteCommand, GetNoteDto>
 {
-    public CreateNoteCommandHandler(IDataContext dataContext, IMapper mapper, ILogger<CreateNoteCommandHandler> logger) : base(dataContext, mapper, logger)
+    public CreateNoteCommandHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateNoteCommandHandlerWithMapping> logger) : base(unitOfWork, mapper,
+        logger)
     {
     }
 
@@ -33,9 +33,10 @@ public class CreateNoteCommandHandler : BaseEntityHandler<CreateNoteCommandHandl
     {
         Logger.LogInformation("Request to create note");
         var note = Mapper.Map<Domain.Entities.Note>(request);
-        var newNote = (await DataContext.Notes.AddAsync(note, cancellationToken)).Entity;
-        await DataContext.SaveChangesAsync(cancellationToken);
+        var newNote = await UnitOfWork.Notes.AddAsync(note, cancellationToken);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
         Logger.LogInformation("Successfully created note with id {NoteId}", newNote.Id);
+        var byIdAsync = await UnitOfWork.Notes.GetByIdAsync(newNote.Id, cancellationToken);
         return Mapper.Map<GetNoteDto>(newNote);
     }
 }

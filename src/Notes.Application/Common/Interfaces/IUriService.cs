@@ -1,4 +1,4 @@
-using Notes.Domain.Filters;
+using Notes.Domain.Contracts.Filters;
 
 namespace Notes.Application.Common.Interfaces;
 

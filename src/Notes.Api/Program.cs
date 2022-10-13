@@ -24,6 +24,7 @@ serviceCollection.AddRedis(notesConfiguration.Redis);
 serviceCollection.AddPostgresDatabase(notesConfiguration.Database);
 serviceCollection.AddIdentity(notesConfiguration.JwtSettings.Secret);
 serviceCollection.AddAutoMapper();
+serviceCollection.AddRepositories();
 serviceCollection.AddSwagger(notesConfiguration.Swagger);
 
 // WebApplication

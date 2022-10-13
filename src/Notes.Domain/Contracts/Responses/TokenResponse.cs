@@ -1,6 +1,6 @@
-using Notes.Domain.Contracts.Identity;
+using Notes.Domain.Entities;
 
-namespace Notes.Application.Identity;
+namespace Notes.Domain.Contracts.Responses;
 
 public class TokenResponse
 {

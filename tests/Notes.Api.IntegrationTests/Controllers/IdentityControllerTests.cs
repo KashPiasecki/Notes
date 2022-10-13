@@ -5,8 +5,8 @@ using AutoFixture;
 using FluentAssertions;
 using Notes.Api.IntegrationTests.Utility;
 using Notes.Application.CQRS.Identity.Commands;
-using Notes.Domain.Contracts;
 using Notes.Domain.Contracts.Identity;
+using Notes.Domain.Contracts.Responses;
 using NUnit.Framework;
 using ApiRoutes = Notes.Api.IntegrationTests.Utility.ApiRoutes;
 

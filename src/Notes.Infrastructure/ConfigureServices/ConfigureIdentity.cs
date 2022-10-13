@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Constants;
 using Notes.Infrastructure.Persistence;
 
 namespace Notes.Infrastructure.ConfigureServices;

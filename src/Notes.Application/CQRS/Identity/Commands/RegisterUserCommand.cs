@@ -4,8 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
-using Notes.Application.Identity;
-using Notes.Domain.Contracts;
+using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;
@@ -36,8 +36,8 @@ public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler
     private readonly ITokenHandler _tokenHandler;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public RegisterUserCommandHandler(IDataContext dataContext, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager,
-        ILogger<RegisterUserCommandHandler> logger) : base(dataContext, logger)
+
+    public RegisterUserCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager, ILogger<RegisterUserCommandHandler> logger) : base(unitOfWork, logger)
     {
         _tokenHandler = tokenHandler;
         _userManager = userManager;

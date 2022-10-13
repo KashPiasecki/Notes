@@ -1,10 +1,10 @@
 using Notes.Application.CQRS.Pagination;
-using Notes.Domain.Contracts;
-using Notes.Domain.Filters;
+using Notes.Domain.Contracts.Filters;
+using Notes.Domain.Contracts.Responses;
 
 namespace Notes.Application.Common.Interfaces;
 
-public interface IPaginationHelper
+public interface IPaginationHandler
 {
     PagedResponse<T> CreatePagedResponse<T>(IEnumerable<T> pagedData, PaginationFilter validFilter, int totalRecords, string route);
     PaginationFilter ValidateQuery(PaginationFilterQuery paginationFilterQuery);

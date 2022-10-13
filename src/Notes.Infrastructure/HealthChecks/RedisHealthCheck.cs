@@ -1,8 +1,9 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Notes.Domain.Configurations;
 using StackExchange.Redis;
 
-namespace Notes.Api.HealthChecks;
+namespace Notes.Infrastructure.HealthChecks;
 
 public class RedisHealthCheck : IHealthCheck
 {

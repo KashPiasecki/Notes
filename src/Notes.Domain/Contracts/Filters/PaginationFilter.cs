@@ -1,4 +1,4 @@
-namespace Notes.Domain.Filters;
+namespace Notes.Domain.Contracts.Filters;
 
 public class PaginationFilter
 {

@@ -1,6 +1,6 @@
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Entities;
 
-namespace Notes.Application.HealthChecks;
+namespace Notes.Domain.Contracts.Responses;
 
 public class HealthCheckResponse
 {

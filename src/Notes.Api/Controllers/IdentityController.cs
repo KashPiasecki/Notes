@@ -2,8 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Notes.Application.CQRS.Identity.Commands;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Identity;
+using Notes.Domain.Contracts.Responses;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Notes.Api.Controllers;

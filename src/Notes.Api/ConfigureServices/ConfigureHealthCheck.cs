@@ -1,8 +1,8 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Notes.Api.HealthChecks;
-using Notes.Application.HealthChecks;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Entities;
+using Notes.Domain.Contracts.Responses;
+using Notes.Infrastructure.HealthChecks;
 using Notes.Infrastructure.Persistence;
 
 namespace Notes.Api.ConfigureServices;

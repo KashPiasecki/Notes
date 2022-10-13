@@ -1,13 +1,19 @@
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Infrastructure.Persistence;
 
 namespace Notes.Infrastructure.Repositories;
 
-public abstract class BaseRepository
+public abstract class BaseRepository : IBaseRepository
 {
-    protected readonly IDataContext DataContext;
+    protected readonly DataContext DataContext;
 
-    protected BaseRepository(IDataContext dataContext)
+    protected BaseRepository(DataContext dataContext)
     {
         DataContext = dataContext;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await DataContext.SaveChangesAsync();
     }
 }

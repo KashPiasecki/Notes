@@ -6,38 +6,31 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Domain.Configurations;
-using Notes.Domain.Contracts;
-using Notes.Domain.Contracts.Identity;
+using Notes.Domain.Contracts.Constants;
+using Notes.Domain.Contracts.Responses;
+using Notes.Domain.Entities;
 
-namespace Notes.Application.Identity;
-
-public interface ITokenHandler
-{
-    Task<TokenResponse> GenerateToken(IdentityUser user);
-    ClaimsPrincipal? GetPrincipalFromToken(string token);
-    DateTime GetExpirationTime(long expiryDateUnix);
-}
+namespace Notes.Infrastructure.Jwt;
 
 public class TokenHandler : ITokenHandler
 {
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly TokenValidationParameters _tokenValidationParameters;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IDataContext _dataContext;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TokenHandler> _logger;
 
-
-    public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters, IDataContext dataContext,
-        ILogger<TokenHandler> logger, UserManager<IdentityUser> userManager)
+    public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, ILogger<TokenHandler> logger)
     {
         _jwtConfiguration = jwtConfiguration;
         _tokenValidationParameters = tokenValidationParameters;
-        _dataContext = dataContext;
-        _logger = logger;
         _userManager = userManager;
+        _unitOfWork = unitOfWork;
+        _logger = logger;
     }
-
+    
     public async Task<TokenResponse> GenerateToken(IdentityUser user)
     {
         _logger.LogInformation("Attempt to create token for {Email}", user.Email);
@@ -73,8 +66,8 @@ public class TokenHandler : ITokenHandler
             CreationDate = DateTime.UtcNow,
             ExpireDate = DateTime.UtcNow.AddMonths(1)
         };
-        await _dataContext.RefreshTokens.AddAsync(refreshToken);
-        await _dataContext.SaveChangesAsync();
+        await _unitOfWork.RefreshTokens.AddAsync(refreshToken);
+        await _unitOfWork.SaveChangesAsync(CancellationToken.None);
         _logger.LogInformation("Successfully created token for {Email}", user.Email);
         return new TokenResponse
         {
@@ -112,6 +105,6 @@ public class TokenHandler : ITokenHandler
     }
 
     private static bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken) =>
-        (validatedToken is JwtSecurityToken jwtSecurityToken) &&
+        validatedToken is JwtSecurityToken jwtSecurityToken &&
         jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
 }

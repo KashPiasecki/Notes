@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Notes.Application.Common.Exceptions;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Responses;
 using ApplicationException = Notes.Application.Common.Exceptions.ApplicationException;
 using ValidationException = Notes.Application.Common.Exceptions.ValidationException;
 

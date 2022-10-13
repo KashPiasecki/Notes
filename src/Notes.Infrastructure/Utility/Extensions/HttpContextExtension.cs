@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Constants;
 
 namespace Notes.Infrastructure.Utility.Extensions;
 

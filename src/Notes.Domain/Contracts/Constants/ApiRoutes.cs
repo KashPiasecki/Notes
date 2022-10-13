@@ -1,4 +1,4 @@
-namespace Notes.Domain.Contracts;
+namespace Notes.Domain.Contracts.Constants;
 
 public static class ApiRoutes
 {

@@ -11,7 +11,8 @@ using Notes.Application.CQRS.Note.Queries.GetAll;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.CQRS.Note.Queries.GetByUserId;
 using Notes.Application.CQRS.Pagination;
-using Notes.Domain.Contracts;
+using Notes.Domain.Contracts.Constants;
+using Notes.Domain.Contracts.Responses;
 using Notes.Infrastructure.Cache;
 using Notes.Infrastructure.Utility.Extensions;
 using Swashbuckle.AspNetCore.Annotations;
@@ -43,8 +44,7 @@ public class NotesController : ControllerBase
         [FromQuery] PaginationFilterQuery paginationFilterQuery,
         [FromQuery] NoteFilterQuery noteFilterQuery)
     {
-        var route = Request.Path.Value;
-        var request = new GetPagedNotesQuery(route!, paginationFilterQuery, noteFilterQuery);
+        var request = new GetPagedNotesQuery(Request.Path.Value!, paginationFilterQuery, noteFilterQuery);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
@@ -116,9 +116,7 @@ public class NotesController : ControllerBase
         [FromQuery] PaginationFilterQuery paginationFilterQuery,
         [FromQuery] NoteFilterQuery noteFilterQuery)
     {
-        var userId = HttpContext.GetUserId();
-        var route = Request.Path.Value;
-        var request = new GetPagedNotesForUserQuery(userId, paginationFilterQuery, route!, noteFilterQuery);
+        var request = new GetPagedNotesForUserQuery(HttpContext.GetUserId(), paginationFilterQuery, Request.Path.Value!, noteFilterQuery);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
@@ -130,10 +128,10 @@ public class NotesController : ControllerBase
     [SwaggerResponse(404, Type = typeof(ErrorResponse), Description = "Entity Not Found")]
     [SwaggerResponse(422, Type = typeof(ErrorResponse), Description = "Validation Error")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
-    public async Task<ActionResult<GetNoteDto>> UpdateForUser(UpdateNoteCommand updateNoteCommand)
+    public async Task<ActionResult<GetNoteDto>> UpdateForUser(UpdateNoteForUserCommand updateNoteForUserCommand)
     {
-        var result = await _mediator.Send(new UpdateNoteForUserCommand(updateNoteCommand.Id, updateNoteCommand.Title, updateNoteCommand.Content,
-            HttpContext.GetUserId()));
+        updateNoteForUserCommand.UserId = HttpContext.GetUserId();
+        var result = await _mediator.Send(updateNoteForUserCommand);
         return Ok(result);
     }
 
