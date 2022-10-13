@@ -7,6 +7,6 @@ public static class HttpContextExtension
 {
     public static string GetUserId(this HttpContext httpContext)
     {
-        return httpContext.User.Claims.Single(x => x.Type.Equals(JwtClaimNames.UserId)).Value;
+        return httpContext.User.Claims.SingleOrDefault(x => x.Type.Equals(JwtClaimNames.UserId)).Value;
     }
 }

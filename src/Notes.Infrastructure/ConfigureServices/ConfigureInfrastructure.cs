@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Notes.Application.Common.Interfaces;
 using Notes.Infrastructure.Jwt;
 using Notes.Infrastructure.Pagination;
+using Notes.Infrastructure.Utility.Providers;
 using Notes.Infrastructure.Utility.Wrappers;
 
 namespace Notes.Infrastructure.ConfigureServices;
@@ -13,6 +14,7 @@ public static class ConfigureInfrastructure
     {
         serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         serviceCollection.AddScoped<IPaginationHandler, PaginationHandler>();
+        serviceCollection.AddTransient<IContextInfoProvider, ContextInfoProvider>();
         serviceCollection.AddSingleton<IJsonConverterWrapper, JsonConverterWrapper>();
         serviceCollection.AddSingleton<IUriService>(serviceProvider =>
         {

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Notes.Application.Common.Interfaces;
 using Notes.Application.CQRS.Filtering;
 using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;
@@ -26,10 +27,13 @@ namespace Notes.Api.Controllers;
 public class NotesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IContextInfoProvider _contextInfoProvider;
+    
 
-    public NotesController(IMediator mediator)
+    public NotesController(IMediator mediator, IContextInfoProvider contextInfoProvider)
     {
         _mediator = mediator;
+        _contextInfoProvider = contextInfoProvider;
     }
 
     [HttpGet]
@@ -44,7 +48,8 @@ public class NotesController : ControllerBase
         [FromQuery] PaginationFilterQuery paginationFilterQuery,
         [FromQuery] NoteFilterQuery noteFilterQuery)
     {
-        var request = new GetPagedNotesQuery(Request.Path.Value!, paginationFilterQuery, noteFilterQuery);
+        var route = _contextInfoProvider.GetRoute();
+        var request = new GetPagedNotesQuery(route, paginationFilterQuery, noteFilterQuery);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
@@ -101,7 +106,7 @@ public class NotesController : ControllerBase
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
     public async Task<ActionResult<Guid>> Create([FromBody] CreateNoteCommand createNoteCommand)
     {
-        createNoteCommand.UserId = HttpContext.GetUserId();
+        createNoteCommand.UserId = _contextInfoProvider.GetUserId();
         var result = await _mediator.Send(createNoteCommand);
         return CreatedAtAction(nameof(Get), routeValues: new { id = result.Id }, value: result);
     }
@@ -112,11 +117,13 @@ public class NotesController : ControllerBase
     [SwaggerResponse(200, Type = typeof(PagedResponse<GetNoteDto>), Description = "Get notes for user")]
     [SwaggerResponse(401, Description = "Unauthorized Operation")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
-    public async Task<ActionResult<PagedResponse<GetNoteDto>>> GetForUser(
+    public async Task<ActionResult<PagedResponse<GetNoteDto>>> GetAllForUser(
         [FromQuery] PaginationFilterQuery paginationFilterQuery,
         [FromQuery] NoteFilterQuery noteFilterQuery)
     {
-        var request = new GetPagedNotesForUserQuery(HttpContext.GetUserId(), paginationFilterQuery, Request.Path.Value!, noteFilterQuery);
+        var userId = _contextInfoProvider.GetUserId();
+        var route = _contextInfoProvider.GetRoute();
+        var request = new GetPagedNotesForUserQuery(userId, paginationFilterQuery, route, noteFilterQuery);
         var result = await _mediator.Send(request);
         return Ok(result);
     }
@@ -130,7 +137,7 @@ public class NotesController : ControllerBase
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
     public async Task<ActionResult<GetNoteDto>> UpdateForUser(UpdateNoteForUserCommand updateNoteForUserCommand)
     {
-        updateNoteForUserCommand.UserId = HttpContext.GetUserId();
+        updateNoteForUserCommand.UserId = _contextInfoProvider.GetUserId();
         var result = await _mediator.Send(updateNoteForUserCommand);
         return Ok(result);
     }
@@ -141,9 +148,10 @@ public class NotesController : ControllerBase
     [SwaggerResponse(401, Description = "Unauthorized Operation")]
     [SwaggerResponse(404, Type = typeof(ErrorResponse), Description = "Entity Not Found")]
     [SwaggerResponse(500, Type = typeof(ErrorResponse), Description = "Internal Server Error")]
-    public async Task<ActionResult> DeleteForUser(DeleteNoteCommand deleteNoteCommand)
+    public async Task<ActionResult> DeleteForUser(DeleteNoteForUserCommand deleteNoteForUserCommand)
     {
-        await _mediator.Send(new DeleteNoteForUserCommand(deleteNoteCommand.Id, HttpContext.GetUserId()));
+        deleteNoteForUserCommand.UserId = _contextInfoProvider.GetUserId();
+        await _mediator.Send(deleteNoteForUserCommand);
         return NoContent();
     }
 }

@@ -21,13 +21,18 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release
 
-  # unitTest:
-  #   name: Run Unit Tests
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Test
-  #     run: dotnet test tests/unitTests -c Release
+  unitTest:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test Api
+      run: dotnet test tests/Notes.Api.UnitTests -c Release
+#    - name: Test Application
+#      dotnet test tests/Notes.Application.UnitTests -c Release
+#    - name: Test Infrastructure
+#      dotnet test tests/Notes.Infrastructure.UnitTests -c Release
+      
 
   integrationTest:
     name: Run Integration Tests
