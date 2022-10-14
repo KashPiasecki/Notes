@@ -12,10 +12,12 @@ public static class ConfigureInfrastructure
 {
     public static void AddInfrastructureServices(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddTransient<IContextInfoProvider, ContextInfoProvider>();
+        serviceCollection.AddTransient<IJsonConverterWrapper, JsonConverterWrapper>();
+        serviceCollection.AddTransient<IClaimsPrincipalInfoProvider, ClaimsPrincipalInfoProvider>();
         serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         serviceCollection.AddScoped<IPaginationHandler, PaginationHandler>();
-        serviceCollection.AddTransient<IContextInfoProvider, ContextInfoProvider>();
-        serviceCollection.AddSingleton<IJsonConverterWrapper, JsonConverterWrapper>();
+        serviceCollection.AddScoped<IUserManagerWrapper, UserManagerWrapper>();
         serviceCollection.AddSingleton<IUriService>(serviceProvider =>
         {
             var accessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();

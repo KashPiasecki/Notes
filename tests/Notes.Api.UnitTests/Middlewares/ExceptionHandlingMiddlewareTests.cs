@@ -28,8 +28,8 @@ public class ExceptionHandlingMiddlewareTests
         var logger = Any.Instance<ILogger<ExceptionHandlingMiddleware>>();
 
         // Act
-        var middlewareInstance = new ExceptionHandlingMiddleware(logger);
-        await middlewareInstance.InvokeAsync(defaultContext, innerHttpContext =>
+        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(logger);
+        await exceptionHandlingMiddleware.InvokeAsync(defaultContext, innerHttpContext =>
         {
             innerHttpContext.Response.WriteAsync(response);
             return Task.CompletedTask;
@@ -49,9 +49,9 @@ public class ExceptionHandlingMiddlewareTests
         var logger = Any.Instance<ILogger<ExceptionHandlingMiddleware>>();
 
         // Act
-        var middlewareInstance = new ExceptionHandlingMiddleware(logger);
+        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(logger);
         var expectedException = Any.Exception();
-        await middlewareInstance.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
+        await exceptionHandlingMiddleware.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
         // Assert
         var result = (HttpStatusCode)defaultContext.Response.StatusCode;
         result.Should().Be(HttpStatusCode.InternalServerError);
@@ -65,9 +65,9 @@ public class ExceptionHandlingMiddlewareTests
         var logger = Any.Instance<ILogger<ExceptionHandlingMiddleware>>();
 
         // Act
-        var middlewareInstance = new ExceptionHandlingMiddleware(logger);
+        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(logger);
         var expectedException = Any.Instance<NotFoundException>();
-        await middlewareInstance.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
+        await exceptionHandlingMiddleware.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
         // Assert
         var result = (HttpStatusCode)defaultContext.Response.StatusCode;
         result.Should().Be(HttpStatusCode.NotFound);
@@ -81,9 +81,9 @@ public class ExceptionHandlingMiddlewareTests
         var logger = Any.Instance<ILogger<ExceptionHandlingMiddleware>>();
 
         // Act
-        var middlewareInstance = new ExceptionHandlingMiddleware(logger);
+        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(logger);
         var expectedException = Any.Instance<ValidationException>();
-        await middlewareInstance.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
+        await exceptionHandlingMiddleware.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
         // Assert
         var result = (HttpStatusCode)defaultContext.Response.StatusCode;
         result.Should().Be(HttpStatusCode.UnprocessableEntity);

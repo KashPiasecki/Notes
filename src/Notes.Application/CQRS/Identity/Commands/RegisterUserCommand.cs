@@ -12,8 +12,7 @@ namespace Notes.Application.CQRS.Identity.Commands;
 
 public record RegisterUserCommand(string UserName, string Email, string Password) : IRequest<AuthenticationResult>
 {
-    [JsonIgnore]
-    public bool IsAdmin { get; set; }
+    [JsonIgnore] public bool IsAdmin { get; set; }
 }
 
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
@@ -34,25 +33,26 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
 public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler>, IRequestHandler<RegisterUserCommand, AuthenticationResult>
 {
     private readonly ITokenHandler _tokenHandler;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserManagerWrapper _userManagerWrapper;
 
 
-    public RegisterUserCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager, ILogger<RegisterUserCommandHandler> logger) : base(unitOfWork, logger)
+    public RegisterUserCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, IUserManagerWrapper userManagerWrapper,
+        ILogger<RegisterUserCommandHandler> logger) : base(unitOfWork, logger)
     {
         _tokenHandler = tokenHandler;
-        _userManager = userManager;
+        _userManagerWrapper = userManagerWrapper;
     }
 
     public async Task<AuthenticationResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        if (!_userManager.Users.Any())
+        if (!_userManagerWrapper.HasAnyUsers())
         {
             Logger.LogInformation("No users in the database. Creating admin user {Email}", request.Email);
             request.IsAdmin = true;
         }
-        
+
         Logger.LogInformation("Attempt to register user {Email}", request.Email);
-        var exisingUser = await _userManager.FindByEmailAsync(request.Email);
+        var exisingUser = await _userManagerWrapper.FindByEmailAsync(request.Email);
         if (exisingUser is not null)
         {
             Logger.LogWarning("User with email {Email} already exists", request.Email);
@@ -63,21 +63,8 @@ public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler
             };
         }
 
-        var newUser = new IdentityUser
-        {
-            Email = request.Email,
-            UserName = request.UserName
-        };
-
-        var createdUser = await _userManager.CreateAsync(newUser, request.Password);
-        
-        await _userManager.AddToRoleAsync(newUser, RoleNames.User);
-        if (request.IsAdmin)
-        {
-            await _userManager.RemoveFromRoleAsync(newUser, RoleNames.User);
-            await _userManager.AddToRolesAsync(newUser, new[]{ RoleNames.Admin, RoleNames.User});
-        }
-
+        var identityUser = _userManagerWrapper.CreateIdentityUser(request.Email, request.UserName);
+        var createdUser = await _userManagerWrapper.CreateAsync(identityUser, request.Password);
         if (!createdUser.Succeeded)
         {
             Logger.LogWarning("Validation error while creating the account");
@@ -87,8 +74,14 @@ public class RegisterUserCommandHandler : BaseHandler<RegisterUserCommandHandler
                 Errors = createdUser.Errors.Select(x => x.Description)
             };
         }
-        
-        var tokenResponse = await _tokenHandler.GenerateToken(newUser);
+
+        await _userManagerWrapper.AddToRoleAsync(identityUser, RoleNames.User);
+        if (request.IsAdmin)
+        {
+            await _userManagerWrapper.AddToRoleAsync(identityUser, RoleNames.Admin);
+        }
+
+        var tokenResponse = await _tokenHandler.GenerateToken(identityUser);
         Logger.LogInformation("Successfully created user {Email}", request.Email);
         return new AuthenticationSuccessResult
         {

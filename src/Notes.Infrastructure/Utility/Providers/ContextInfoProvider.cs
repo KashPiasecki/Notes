@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Notes.Application.Common.Interfaces;
-using Notes.Domain.Contracts.Constants;
+using Notes.Infrastructure.Utility.Extensions;
 
 namespace Notes.Infrastructure.Utility.Providers;
 
@@ -13,13 +13,10 @@ public class ContextInfoProvider : IContextInfoProvider
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string GetUserId()
-    {
-        return _httpContextAccessor.HttpContext!.User.Claims.Single(x => x.Type.Equals(JwtClaimNames.UserId)).Value;
-    }
+    public string GetUserId() =>
+        _httpContextAccessor.HttpContext!.GetUserId();
 
-    public string GetRoute()
-    {
-        return _httpContextAccessor.HttpContext!.Request.Path;
-    }
+    public string GetRoute() =>
+        _httpContextAccessor.HttpContext!.Request.Path;
+    
 }

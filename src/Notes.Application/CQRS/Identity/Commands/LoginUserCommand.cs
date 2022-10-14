@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
 using Notes.Application.Common.Interfaces.Repositories;
@@ -13,29 +12,32 @@ public record LoginUserCommand(string Email, string Password) : IRequest<Authent
 public class LoginUserCommandHandler : BaseHandler<LoginUserCommandHandler>, IRequestHandler<LoginUserCommand, AuthenticationResult>
 {
     private readonly ITokenHandler _tokenHandler;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserManagerWrapper _userManagerWrapper;
 
-    public LoginUserCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager, ILogger<LoginUserCommandHandler> logger) : base(unitOfWork, logger)
+    public LoginUserCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, IUserManagerWrapper userManagerWrapper, ILogger<LoginUserCommandHandler> logger) : base(unitOfWork, logger)
     {
         _tokenHandler = tokenHandler;
-        _userManager = userManager;
+        _userManagerWrapper = userManagerWrapper;
     }
 
     public async Task<AuthenticationResult> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("User {Email} trying to log in", request.Email);
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _userManagerWrapper.FindByEmailAsync(request.Email);
         if (user is null)
         {
             return GenerateFailureResponse(request.Email);
         }
 
-        var userHasValidPassword = await _userManager.CheckPasswordAsync(user, request.Password);
+        var userHasValidPassword = await _userManagerWrapper.CheckPasswordAsync(user, request.Password);
 
+        if (!userHasValidPassword)
+        {
+            return GenerateFailureResponse(request.Email);
+        }
+        
         var token = await _tokenHandler.GenerateToken(user);
-        return userHasValidPassword
-            ? GenerateSuccessResponse(token, request.Email)
-            : GenerateFailureResponse(request.Email);
+        return GenerateSuccessResponse(token, request.Email);
     }
 
     private AuthenticationResult GenerateFailureResponse(string email)

@@ -1,10 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces;
 using Notes.Application.Common.Interfaces.Repositories;
-using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;
@@ -14,12 +11,15 @@ public record RefreshTokenCommand(string Token, string RefreshToken) : IRequest<
 public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler>, IRequestHandler<RefreshTokenCommand, AuthenticationResult>
 {
     private readonly ITokenHandler _tokenHandler;
-    private readonly UserManager<IdentityUser> _userManager;
-    
-    public RefreshTokenCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, UserManager<IdentityUser> userManager, ILogger<RefreshTokenCommandHandler> logger) : base(unitOfWork, logger)
+    private readonly IClaimsPrincipalInfoProvider _claimsPrincipalInfoProvider;
+    private readonly IUserManagerWrapper _userManagerWrapper;
+
+    public RefreshTokenCommandHandler(IUnitOfWork unitOfWork, ITokenHandler tokenHandler, IClaimsPrincipalInfoProvider claimsPrincipalInfoProvider,
+        IUserManagerWrapper userManagerWrapper, ILogger<RefreshTokenCommandHandler> logger) : base(unitOfWork, logger)
     {
         _tokenHandler = tokenHandler;
-        _userManager = userManager;
+        _userManagerWrapper = userManagerWrapper;
+        _claimsPrincipalInfoProvider = claimsPrincipalInfoProvider;
     }
 
     public async Task<AuthenticationResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -32,15 +32,14 @@ public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler
             return GenerateFailureResponse();
         }
 
-        var expiryDateUnix = long.Parse(validatedToken.Claims.Single(x => x.Type.Equals(JwtRegisteredClaimNames.Exp)).Value);
-        var expiryDateTime = _tokenHandler.GetExpirationTime(expiryDateUnix);
+        var expiryDateTime = _claimsPrincipalInfoProvider.GetExpiryTime(validatedToken);
         if (expiryDateTime > DateTime.Now)
         {
             Logger.LogWarning("Token hasn't expired yet");
             return GenerateFailureResponse();
         }
 
-        var tokenId = validatedToken.Claims.Single(x => x.Type.Equals(JwtClaimNames.Jti)).Value;
+        var tokenId = _claimsPrincipalInfoProvider.GetId(validatedToken);
         var storedRefreshToken = await UnitOfWork.RefreshTokens.GetAsync(request.RefreshToken, cancellationToken);
         if (storedRefreshToken is null || storedRefreshToken.JwtId != tokenId)
         {
@@ -70,7 +69,8 @@ public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler
         UnitOfWork.RefreshTokens.UpdateAsync(storedRefreshToken);
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
-        var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type.Equals(JwtClaimNames.UserId)).Value);
+        var userId = _claimsPrincipalInfoProvider.GetUserId(validatedToken);
+        var user = await _userManagerWrapper.FindByIdAsync(userId);
         var tokenResponse = await _tokenHandler.GenerateToken(user);
 
         return new AuthenticationSuccessResult

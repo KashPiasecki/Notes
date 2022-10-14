@@ -15,7 +15,6 @@ using Notes.Application.CQRS.Pagination;
 using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Responses;
 using Notes.Infrastructure.Cache;
-using Notes.Infrastructure.Utility.Extensions;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Notes.Api.Controllers;
