@@ -22,9 +22,9 @@ public class CreateNoteCommandValidator : AbstractValidator<CreateNoteCommand>
     }
 }
 
-public class CreateNoteCommandHandlerWithMapping : BaseHandlerWithMapping<CreateNoteCommandHandlerWithMapping>, IRequestHandler<CreateNoteCommand, GetNoteDto>
+public class CreateNoteCommandHandler : BaseHandlerWithMapping<CreateNoteCommandHandler>, IRequestHandler<CreateNoteCommand, GetNoteDto>
 {
-    public CreateNoteCommandHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateNoteCommandHandlerWithMapping> logger) : base(unitOfWork, mapper,
+    public CreateNoteCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CreateNoteCommandHandler> logger) : base(unitOfWork, mapper,
         logger)
     {
     }
@@ -36,7 +36,6 @@ public class CreateNoteCommandHandlerWithMapping : BaseHandlerWithMapping<Create
         var newNote = await UnitOfWork.Notes.AddAsync(note, cancellationToken);
         await UnitOfWork.SaveChangesAsync(cancellationToken);
         Logger.LogInformation("Successfully created note with id {NoteId}", newNote.Id);
-        var byIdAsync = await UnitOfWork.Notes.GetByIdAsync(newNote.Id, cancellationToken);
         return Mapper.Map<GetNoteDto>(newNote);
     }
 }

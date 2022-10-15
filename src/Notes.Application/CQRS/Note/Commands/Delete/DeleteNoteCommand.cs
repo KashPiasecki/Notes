@@ -7,9 +7,9 @@ namespace Notes.Application.CQRS.Note.Commands.Delete;
 
 public record DeleteNoteCommand(Guid Id) : IRequest;
 
-public class DeleteNoteCommandHandlerWithMapping : BaseHandler<DeleteNoteCommandHandlerWithMapping>, IRequestHandler<DeleteNoteCommand>
+public class DeleteNoteCommandHandler : BaseHandler<DeleteNoteCommandHandler>, IRequestHandler<DeleteNoteCommand>
 {
-    public DeleteNoteCommandHandlerWithMapping(IUnitOfWork unitOfWork, ILogger<DeleteNoteCommandHandlerWithMapping> logger) : base(unitOfWork, logger)
+    public DeleteNoteCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteNoteCommandHandler> logger) : base(unitOfWork, logger)
     {
     }
 

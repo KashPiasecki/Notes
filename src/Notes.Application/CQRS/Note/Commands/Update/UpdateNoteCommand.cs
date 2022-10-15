@@ -19,9 +19,9 @@ public class UpdateNoteCommandValidator : AbstractValidator<UpdateNoteCommand>
     }
 }
 
-public class UpdateNoteCommandHandlerWithMapping : BaseHandlerWithMapping<UpdateNoteCommandHandlerWithMapping>, IRequestHandler<UpdateNoteCommand, GetNoteDto>
+public class UpdateNoteCommandHandler : BaseHandlerWithMapping<UpdateNoteCommandHandler>, IRequestHandler<UpdateNoteCommand, GetNoteDto>
 {
-    public UpdateNoteCommandHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateNoteCommandHandlerWithMapping> logger) : base(unitOfWork, mapper, logger)
+    public UpdateNoteCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateNoteCommandHandler> logger) : base(unitOfWork, mapper, logger)
     {
     }
 

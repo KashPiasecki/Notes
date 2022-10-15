@@ -23,8 +23,4 @@
       <ProjectReference Include="..\..\src\Notes.Application\Notes.Application.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="CQRS\Notes" />
-    </ItemGroup>
-
 </Project>

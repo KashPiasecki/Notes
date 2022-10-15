@@ -13,10 +13,10 @@ public record DeleteNoteForUserCommand(Guid Id) : IRequest
     
 }
 
-public class DeleteNoteForUserCommandHandlerWithMapping : BaseHandler<DeleteNoteForUserCommandHandlerWithMapping>,
+public class DeleteNoteForUserCommandHandler : BaseHandler<DeleteNoteForUserCommandHandler>,
     IRequestHandler<DeleteNoteForUserCommand>
 {
-    public DeleteNoteForUserCommandHandlerWithMapping(IUnitOfWork unitOfWork, ILogger<DeleteNoteForUserCommandHandlerWithMapping> logger) :
+    public DeleteNoteForUserCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteNoteForUserCommandHandler> logger) :
         base(unitOfWork, logger)
     {
     }
