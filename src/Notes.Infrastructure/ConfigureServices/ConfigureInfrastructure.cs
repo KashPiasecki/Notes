@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
+using Notes.Application.Common.Interfaces.Providers;
+using Notes.Application.Common.Interfaces.Wrappers;
 using Notes.Infrastructure.Jwt;
 using Notes.Infrastructure.Pagination;
 using Notes.Infrastructure.Utility.Providers;

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Wrappers;
 
 namespace Notes.Infrastructure.Utility.Wrappers;
 

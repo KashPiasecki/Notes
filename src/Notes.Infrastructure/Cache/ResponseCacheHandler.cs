@@ -1,15 +1,16 @@
 using Microsoft.Extensions.Caching.Distributed;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
+using Notes.Application.Common.Interfaces.Wrappers;
 
 namespace Notes.Infrastructure.Cache;
 
-public class ResponseCacheService : IResponseCacheService
+public class ResponseCacheHandler : IResponseCacheHandler
 {
     private readonly IJsonConverterWrapper _json;
     private readonly IDistributedCache _distributedCache;
 
 
-    public ResponseCacheService(IJsonConverterWrapper json, IDistributedCache distributedCache)
+    public ResponseCacheHandler(IJsonConverterWrapper json, IDistributedCache distributedCache)
     {
         _json = json;
         _distributedCache = distributedCache;

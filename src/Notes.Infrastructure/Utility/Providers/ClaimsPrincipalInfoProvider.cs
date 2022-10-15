@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Microsoft.IdentityModel.JsonWebTokens;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Providers;
 using Notes.Domain.Contracts.Constants;
 
 namespace Notes.Infrastructure.Utility.Providers;

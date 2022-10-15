@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Notes.Application.Common.Exceptions;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Domain.Configurations;
 using Notes.Domain.Contracts.Constants;

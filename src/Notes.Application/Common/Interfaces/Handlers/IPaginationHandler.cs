@@ -2,7 +2,7 @@ using Notes.Application.CQRS.Pagination;
 using Notes.Domain.Contracts.Filters;
 using Notes.Domain.Contracts.Responses;
 
-namespace Notes.Application.Common.Interfaces;
+namespace Notes.Application.Common.Interfaces.Handlers;
 
 public interface IPaginationHandler
 {

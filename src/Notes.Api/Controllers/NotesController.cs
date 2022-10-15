@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Providers;
 using Notes.Application.CQRS.Filtering;
 using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;

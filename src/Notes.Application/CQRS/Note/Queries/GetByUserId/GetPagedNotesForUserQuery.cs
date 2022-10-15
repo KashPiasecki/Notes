@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Filtering;
 using Notes.Application.CQRS.Pagination;

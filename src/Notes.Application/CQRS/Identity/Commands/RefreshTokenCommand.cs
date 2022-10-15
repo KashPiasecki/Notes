@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
+using Notes.Application.Common.Interfaces.Providers;
 using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Application.Common.Interfaces.Wrappers;
 using Notes.Domain.Contracts.Identity;
 
 namespace Notes.Application.CQRS.Identity.Commands;

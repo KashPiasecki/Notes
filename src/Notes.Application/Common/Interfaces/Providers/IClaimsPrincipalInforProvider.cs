@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Notes.Application.Common.Interfaces;
+namespace Notes.Application.Common.Interfaces.Providers;
 
 public interface IClaimsPrincipalInfoProvider
 {

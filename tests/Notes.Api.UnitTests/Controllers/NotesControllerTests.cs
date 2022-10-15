@@ -1,6 +1,6 @@
 using MediatR;
 using Notes.Api.Controllers;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Providers;
 using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.CQRS.Note.Commands.Delete;
 using Notes.Application.CQRS.Note.Commands.Update;

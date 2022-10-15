@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Application.Common.Interfaces.Wrappers;
 using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Identity;
 

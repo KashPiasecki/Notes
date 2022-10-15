@@ -1,4 +1,4 @@
-namespace Notes.Application.Common.Interfaces;
+namespace Notes.Application.Common.Interfaces.Wrappers;
 
 public interface IJsonConverterWrapper
 {

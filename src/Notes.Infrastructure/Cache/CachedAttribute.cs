@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Domain.Configurations;
 using Notes.Infrastructure.Utility.Extensions;
 
@@ -30,7 +30,7 @@ public class CachedAttribute : Attribute, IAsyncActionFilter
             return;
         }
 
-        var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
+        var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheHandler>();
         var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext);
         var cachedResponse = await cacheService.GetCachedResponseAsync(cacheKey);
         logger.LogInformation("Accessing redis cache");

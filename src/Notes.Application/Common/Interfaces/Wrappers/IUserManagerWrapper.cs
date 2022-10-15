@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Notes.Application.Common.Interfaces;
+namespace Notes.Application.Common.Interfaces.Wrappers;
 
 public interface IUserManagerWrapper
 {

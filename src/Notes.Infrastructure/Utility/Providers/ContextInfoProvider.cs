@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Providers;
 using Notes.Infrastructure.Utility.Extensions;
 
 namespace Notes.Infrastructure.Utility.Providers;

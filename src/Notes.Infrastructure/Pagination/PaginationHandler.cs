@@ -1,4 +1,5 @@
 using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Application.CQRS.Pagination;
 using Notes.Domain.Contracts.Filters;
 using Notes.Domain.Contracts.Responses;

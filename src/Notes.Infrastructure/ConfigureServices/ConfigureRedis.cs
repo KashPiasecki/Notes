@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Notes.Application.Common.Interfaces;
+using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Domain.Configurations;
 using Notes.Infrastructure.Cache;
 using StackExchange.Redis;
@@ -15,7 +15,7 @@ public static class ConfigureRedis
         {
             options.Configuration = redisConfiguration.ConnectionString;
         });
-        serviceCollection.AddSingleton<IResponseCacheService, ResponseCacheService>();
+        serviceCollection.AddSingleton<IResponseCacheHandler, ResponseCacheHandler>();
         serviceCollection.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(redisConfiguration.ConnectionString));
     }
