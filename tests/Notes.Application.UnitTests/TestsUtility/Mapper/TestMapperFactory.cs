@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace Notes.Application.UnitTests.MapperUtility;
+namespace Notes.Application.UnitTests.TestsUtility.Mapper;
 
 public static class TestMapperFactory
 {
@@ -8,6 +8,6 @@ public static class TestMapperFactory
     {
         var myProfile = new TestNoteProfile();
         var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-        return new Mapper(configuration);
+        return new AutoMapper.Mapper(configuration);
     }
 }

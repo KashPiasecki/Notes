@@ -8,9 +8,9 @@ namespace Notes.Application.CQRS.Note.Queries.GetById;
 
 public record GetNoteByIdQuery(Guid Id) : IRequest<GetNoteDto>;
 
-public class GetNoteByIdQueryHandlerWithMapping : BaseHandlerWithMapping<GetNoteByIdQueryHandlerWithMapping>, IRequestHandler<GetNoteByIdQuery, GetNoteDto>
+public class GetNoteByIdQueryHandler : BaseHandlerWithMapping<GetNoteByIdQueryHandler>, IRequestHandler<GetNoteByIdQuery, GetNoteDto>
 {
-    public GetNoteByIdQueryHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetNoteByIdQueryHandlerWithMapping> logger) : base(unitOfWork, mapper, logger)
+    public GetNoteByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GetNoteByIdQueryHandler> logger) : base(unitOfWork, mapper, logger)
     {
     }
 

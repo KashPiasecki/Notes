@@ -4,7 +4,7 @@ using Notes.Application.CQRS.Note.Commands.Update;
 using Notes.Application.CQRS.Note.Queries;
 using Notes.Domain.Entities;
 
-namespace Notes.Application.UnitTests.MapperUtility;
+namespace Notes.Application.UnitTests.TestsUtility.Mapper;
 
 public class TestNoteProfile : Profile
 {

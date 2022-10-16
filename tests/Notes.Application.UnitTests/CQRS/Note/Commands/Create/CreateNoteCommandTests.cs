@@ -2,7 +2,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Commands.Create;
-using Notes.Application.UnitTests.MapperUtility;
+using Notes.Application.UnitTests.TestsUtility.Mapper;
 using NSubstitute;
 using NUnit.Framework;
 using TddXt.AnyRoot.Builder;

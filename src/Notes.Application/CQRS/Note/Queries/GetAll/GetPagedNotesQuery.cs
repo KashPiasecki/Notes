@@ -9,13 +9,15 @@ using Notes.Domain.Contracts.Responses;
 
 namespace Notes.Application.CQRS.Note.Queries.GetAll;
 
-public record GetPagedNotesQuery(string Route, PaginationFilterQuery PaginationFilterQuery, NoteFilterQuery NoteFilterQuery) : IRequest<PagedResponse<GetNoteDto>>;
+public record GetPagedNotesQuery
+    (string Route, PaginationFilterQuery PaginationFilterQuery, NoteFilterQuery NoteFilterQuery) : IRequest<PagedResponse<GetNoteDto>>;
 
-public class GetAllNotesQueryHandlerWithMapping : BaseHandlerWithMapping<GetAllNotesQueryHandlerWithMapping>, IRequestHandler<GetPagedNotesQuery, PagedResponse<GetNoteDto>>
+public class GetAllNotesQueryHandler : BaseHandlerWithMapping<GetAllNotesQueryHandler>, IRequestHandler<GetPagedNotesQuery, PagedResponse<GetNoteDto>>
 {
     private readonly IPaginationHandler _paginationHandler;
-    
-    public GetAllNotesQueryHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, IPaginationHandler paginationHandler, ILogger<GetAllNotesQueryHandlerWithMapping> logger) : base(unitOfWork, mapper, logger)
+
+    public GetAllNotesQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IPaginationHandler paginationHandler,
+        ILogger<GetAllNotesQueryHandler> logger) : base(unitOfWork, mapper, logger)
     {
         _paginationHandler = paginationHandler;
     }

@@ -12,16 +12,14 @@ namespace Notes.Application.CQRS.Note.Queries.GetByUserId;
 public record GetPagedNotesForUserQuery
     (string UserId, PaginationFilterQuery PaginationFilterQuery, string Route, NoteFilterQuery NoteFilterQuery) : IRequest<PagedResponse<GetNoteDto>>;
 
-public class GetPagedNotesForUserQueryHandlerWithMapping : BaseHandlerWithMapping<GetPagedNotesForUserQueryHandlerWithMapping>,
+public class GetPagedNotesForUserQueryHandler : BaseHandlerWithMapping<GetPagedNotesForUserQueryHandler>,
     IRequestHandler<GetPagedNotesForUserQuery, PagedResponse<GetNoteDto>>
 {
-    private readonly INoteRepository _noteRepository;
     private readonly IPaginationHandler _paginationHandler;
 
 
-    public GetPagedNotesForUserQueryHandlerWithMapping(IUnitOfWork unitOfWork, IMapper mapper, INoteRepository noteRepository, IPaginationHandler paginationHandler, ILogger<GetPagedNotesForUserQueryHandlerWithMapping> logger) : base(unitOfWork, mapper, logger)
+    public GetPagedNotesForUserQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IPaginationHandler paginationHandler, ILogger<GetPagedNotesForUserQueryHandler> logger) : base(unitOfWork, mapper, logger)
     {
-        _noteRepository = noteRepository;
         _paginationHandler = paginationHandler;
     }
 
@@ -29,10 +27,10 @@ public class GetPagedNotesForUserQueryHandlerWithMapping : BaseHandlerWithMappin
     {
         Logger.LogInformation("Request for notes for {UserId}", request.UserId);
         var validPaginationFilter = _paginationHandler.ValidateQuery(request.PaginationFilterQuery);
-        var notes = await _noteRepository.GetAllForUserAsync(request.UserId, validPaginationFilter, request.NoteFilterQuery, cancellationToken);
+        var notes = await UnitOfWork.Notes.GetAllForUserAsync(request.UserId, validPaginationFilter, request.NoteFilterQuery, cancellationToken);
         var notesDto = Mapper.Map<IEnumerable<GetNoteDto>>(notes);
         Logger.LogInformation("Successfully retrieved notes for {UserId}", request.UserId);
-        var totalRecords = await _noteRepository.CountForUserAsync(request.UserId, request.NoteFilterQuery, cancellationToken);
+        var totalRecords = await UnitOfWork.Notes.CountForUserAsync(request.UserId, request.NoteFilterQuery, cancellationToken);
         var pagedResponse = _paginationHandler.CreatePagedResponse(notesDto, validPaginationFilter, totalRecords, request.Route);
         return pagedResponse;
     }

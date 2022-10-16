@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Commands.Update;
-using Notes.Application.UnitTests.MapperUtility;
+using Notes.Application.UnitTests.TestsUtility.Mapper;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
