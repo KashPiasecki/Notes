@@ -52,6 +52,7 @@ public class ExceptionHandlingMiddlewareTests
         var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(logger);
         var expectedException = Any.Exception();
         await exceptionHandlingMiddleware.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
+        
         // Assert
         var result = (HttpStatusCode)defaultContext.Response.StatusCode;
         result.Should().Be(HttpStatusCode.InternalServerError);
@@ -68,6 +69,7 @@ public class ExceptionHandlingMiddlewareTests
         var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(logger);
         var expectedException = Any.Instance<NotFoundException>();
         await exceptionHandlingMiddleware.InvokeAsync(defaultContext, _ => Task.FromException(expectedException));
+        
         // Assert
         var result = (HttpStatusCode)defaultContext.Response.StatusCode;
         result.Should().Be(HttpStatusCode.NotFound);

@@ -14,8 +14,12 @@ public class UpdateNoteCommandValidator : AbstractValidator<UpdateNoteCommand>
 {
     public UpdateNoteCommandValidator()
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.Content).NotEmpty().MaximumLength(255);
+        RuleFor(x => x.Title)
+            .NotEmpty()
+            .MaximumLength(50);
+        RuleFor(x => x.Content)
+            .NotEmpty()
+            .MaximumLength(255);
     }
 }
 

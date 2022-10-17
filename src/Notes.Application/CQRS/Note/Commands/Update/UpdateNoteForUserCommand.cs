@@ -14,12 +14,16 @@ public record UpdateNoteForUserCommand(Guid Id, string Title, string Content) : 
     [JsonIgnore] public string? UserId { get; set; }
 }
 
-public class UpdateNoteCommandForUserValidator : AbstractValidator<UpdateNoteForUserCommand>
+public class UpdateNoteForUserCommandValidator : AbstractValidator<UpdateNoteForUserCommand>
 {
-    public UpdateNoteCommandForUserValidator()
+    public UpdateNoteForUserCommandValidator()
     {
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.Content).NotEmpty().MaximumLength(255);
+        RuleFor(x => x.Title)
+            .NotEmpty()
+            .MaximumLength(50);
+        RuleFor(x => x.Content)
+            .NotEmpty()
+            .MaximumLength(255);
     }
 }
 
