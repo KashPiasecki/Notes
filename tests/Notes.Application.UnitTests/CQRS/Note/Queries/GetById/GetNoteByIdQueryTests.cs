@@ -6,8 +6,6 @@ using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.UnitTests.TestsUtility.Mapper;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using static TddXt.AnyRoot.Root;
-
 using NUnit.Framework;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Queries.GetById;

@@ -12,7 +12,6 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Application.UnitTests.CQRS.Identity.Commands;
 

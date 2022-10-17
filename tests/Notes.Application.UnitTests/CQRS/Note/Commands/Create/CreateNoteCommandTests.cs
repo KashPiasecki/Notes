@@ -6,7 +6,6 @@ using Notes.Application.UnitTests.TestsUtility.Mapper;
 using NSubstitute;
 using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Commands.Create;
 

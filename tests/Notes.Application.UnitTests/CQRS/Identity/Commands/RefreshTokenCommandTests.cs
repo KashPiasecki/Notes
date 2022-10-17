@@ -15,7 +15,6 @@ using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
 using TddXt.AnyRoot.Strings;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Application.UnitTests.CQRS.Identity.Commands;
 

@@ -11,7 +11,6 @@ using NSubstitute;
 using NUnit.Framework;
 using TddXt.AnyRoot.Collections;
 using TddXt.AnyRoot.Numbers;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Queries.GetAll;
 
