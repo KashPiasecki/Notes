@@ -30,8 +30,8 @@ jobs:
       run: dotnet test tests/Notes.Api.UnitTests -c Release
     - name: Test Application
       run: dotnet test tests/Notes.Application.UnitTests -c Release
-    # - name: Test Infrastructure
-    #   run: dotnet test tests/Notes.Infrastructure.UnitTests -c Release
+    - name: Test Infrastructure
+      run: dotnet test tests/Notes.Infrastructure.UnitTests -c Release
       
 
   integrationTest:

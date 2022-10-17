@@ -285,8 +285,8 @@ public class RefreshTokenCommandTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Token.Should().BeEquivalentTo(tokenResponse.Token);
-        result.RefreshToken.Should().BeEquivalentTo(tokenResponse.RefreshToken.Token);
+        result.Token.Should().Be(tokenResponse.Token);
+        result.RefreshToken.Should().Be(tokenResponse.RefreshToken.Token);
     }
     
     [Test]

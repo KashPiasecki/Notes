@@ -35,8 +35,8 @@ public class CreateNoteCommandTests
 
         // Assert
         await unitOfWork.Received(1).SaveChangesAsync(cancellationToken);
-        result.Title.Should().BeEquivalentTo(createNoteCommand.Title);
-        result.Content.Should().BeEquivalentTo(createNoteCommand.Content);
-        result.UserId.Should().BeEquivalentTo(createNoteCommand.UserId);
+        result.Title.Should().Be(createNoteCommand.Title);
+        result.Content.Should().Be(createNoteCommand.Content);
+        result.UserId.Should().Be(createNoteCommand.UserId);
     }
 }

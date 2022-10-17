@@ -56,7 +56,7 @@ public class UpdateNoteCommandTests
         
         // Assert
         await unitOfWork.Received(1).SaveChangesAsync(cancellationToken);
-        result.Title.Should().BeEquivalentTo(updateNoteCommand.Title);
-        result.Content.Should().BeEquivalentTo(updateNoteCommand.Content);
+        result.Title.Should().Be(updateNoteCommand.Title);
+        result.Content.Should().Be(updateNoteCommand.Content);
     }
 }

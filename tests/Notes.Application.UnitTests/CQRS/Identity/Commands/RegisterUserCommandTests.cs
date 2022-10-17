@@ -150,8 +150,8 @@ public class RegisterUserCommandTests
         // Assert
         await userManagerWrapper.Received(1).AddToRoleAsync(identityUser, RoleNames.Admin);
         result.Success.Should().BeTrue();
-        result.Token.Should().BeEquivalentTo(tokenResponse.Token);
-        result.RefreshToken.Should().BeEquivalentTo(tokenResponse.RefreshToken.Token);
+        result.Token.Should().Be(tokenResponse.Token);
+        result.RefreshToken.Should().Be(tokenResponse.RefreshToken.Token);
     }
     
     [Test]
@@ -183,7 +183,7 @@ public class RegisterUserCommandTests
         // Assert
         await userManagerWrapper.DidNotReceive().AddToRoleAsync(Arg.Any<IdentityUser>(), RoleNames.Admin);
         result.Success.Should().BeTrue();
-        result.Token.Should().BeEquivalentTo(tokenResponse.Token);
-        result.RefreshToken.Should().BeEquivalentTo(tokenResponse.RefreshToken.Token);
+        result.Token.Should().Be(tokenResponse.Token);
+        result.RefreshToken.Should().Be(tokenResponse.RefreshToken.Token);
     }
 }

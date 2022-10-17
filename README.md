@@ -12,7 +12,7 @@
 * Postgres SQL ✅
 * CQRS with MediatR ✅
 * JWT Role Authorization ✅
-* Unit tests
+* Unit tests ✅
 * Integrated tests ✅
 * Automapper ✅
 * FluentValidation ✅

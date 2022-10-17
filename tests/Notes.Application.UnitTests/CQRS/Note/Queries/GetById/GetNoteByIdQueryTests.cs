@@ -56,7 +56,7 @@ public class GetNoteByIdQueryTests
         var result = await getNoteByIdQueryHandler.Handle(getNoteByIdQuery, cancellationToken);
         
         // Assert
-        result.Title.Should().BeEquivalentTo(note.Title);
-        result.Content.Should().BeEquivalentTo(note.Content);
+        result.Title.Should().Be(note.Title);
+        result.Content.Should().Be(note.Content);
     }
 }

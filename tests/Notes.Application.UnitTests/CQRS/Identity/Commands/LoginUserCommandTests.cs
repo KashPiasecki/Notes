@@ -89,7 +89,7 @@ public class LoginUserCommandTests
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Token.Should().BeEquivalentTo(token.Token);
+        result.Token.Should().Be(token.Token);
         result.RefreshToken.Should().Be(token.RefreshToken.Token);
     }
 }
