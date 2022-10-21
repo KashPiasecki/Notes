@@ -18,5 +18,4 @@ public class ContextInfoProvider : IContextInfoProvider
 
     public string GetRoute() =>
         _httpContextAccessor.HttpContext!.Request.Path;
-    
 }

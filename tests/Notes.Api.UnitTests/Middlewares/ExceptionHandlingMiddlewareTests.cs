@@ -1,13 +1,10 @@
 using System.Net;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Notes.Api.Middlewares;
 using Notes.Application.Common.Exceptions;
-using NUnit.Framework;
 using TddXt.AnyRoot;
 using TddXt.AnyRoot.Strings;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Api.UnitTests.Middlewares;
 

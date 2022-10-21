@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces.Handlers;
@@ -8,9 +7,7 @@ using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Contracts.Identity;
 using Notes.Domain.Contracts.Responses;
 using Notes.Domain.Entities;
-using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
 
 namespace Notes.Application.UnitTests.CQRS.Identity.Commands;

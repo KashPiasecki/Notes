@@ -1,10 +1,7 @@
-using FluentAssertions;
 using MediatR;
 using Notes.Application.Behaviors;
 using Notes.Application.Common.Exceptions;
 using Notes.Application.UnitTests.TestsUtility.Behaviors;
-using NSubstitute;
-using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
 using TddXt.AnyRoot.Collections;
 

@@ -18,6 +18,7 @@ public static class ConfigureInfrastructure
         serviceCollection.AddTransient<IContextInfoProvider, ContextInfoProvider>();
         serviceCollection.AddTransient<IJsonConverterWrapper, JsonConverterWrapper>();
         serviceCollection.AddTransient<IClaimsPrincipalInfoProvider, ClaimsPrincipalInfoProvider>();
+        serviceCollection.AddTransient<IDistributedCacheWrapper, DistributedCacheWrapper>();
         serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         serviceCollection.AddScoped<IPaginationHandler, PaginationHandler>();
         serviceCollection.AddScoped<IUserManagerWrapper, UserManagerWrapper>();

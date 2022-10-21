@@ -1,6 +1,4 @@
-using FluentAssertions;
 using Notes.Application.CQRS.Note.Commands.Update;
-using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
 using TddXt.AnyRoot.Strings;
 

@@ -1,12 +1,9 @@
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.UnitTests.TestsUtility.Mapper;
-using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using NUnit.Framework;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Queries.GetById;
 

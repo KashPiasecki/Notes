@@ -8,11 +8,8 @@ using Notes.Application.CQRS.Note.Queries;
 using Notes.Application.CQRS.Note.Queries.GetAll;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.CQRS.Note.Queries.GetByUserId;
-using NSubstitute;
-using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
 using TddXt.AnyRoot.Strings;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Api.UnitTests.Controllers;
 

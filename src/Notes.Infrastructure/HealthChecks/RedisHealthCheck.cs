@@ -7,8 +7,9 @@ namespace Notes.Infrastructure.HealthChecks;
 
 public class RedisHealthCheck : IHealthCheck
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly RedisConfiguration _redisConfiguration;
+    private readonly IServiceProvider _serviceProvider;
+    
     
     public RedisHealthCheck(RedisConfiguration redisConfiguration, IServiceProvider serviceProvider)
     {

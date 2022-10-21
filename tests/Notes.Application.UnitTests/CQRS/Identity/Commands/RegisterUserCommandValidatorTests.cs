@@ -1,7 +1,5 @@
-using FluentAssertions;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Application.UnitTests.TestsUtility.Extensions;
-using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
 using TddXt.AnyRoot.Strings;
 

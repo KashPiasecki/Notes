@@ -28,6 +28,9 @@ public class UserManagerWrapper : IUserManagerWrapper
     public async Task<IdentityResult> CreateAsync(IdentityUser user, string password) =>
         await _userManager.CreateAsync(user, password);
 
+    public Task<bool> IsInRoleAsync(IdentityUser user, string role) =>
+        _userManager.IsInRoleAsync(user, role);
+
     public async Task AddToRoleAsync(IdentityUser user, string role) =>
         await _userManager.AddToRoleAsync(user, role);
 

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Application.Common.Interfaces.Repositories;
+using Notes.Application.Common.Interfaces.Wrappers;
 using Notes.Domain.Configurations;
 using Notes.Domain.Contracts.Constants;
 using Notes.Domain.Contracts.Responses;
@@ -18,19 +19,20 @@ public class TokenHandler : ITokenHandler
 {
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly TokenValidationParameters _tokenValidationParameters;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserManagerWrapper _userManagerWrapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TokenHandler> _logger;
 
-    public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork, ILogger<TokenHandler> logger)
+    public TokenHandler(JwtConfiguration jwtConfiguration, TokenValidationParameters tokenValidationParameters,
+        IUserManagerWrapper userManagerWrapper, IUnitOfWork unitOfWork, ILogger<TokenHandler> logger)
     {
         _jwtConfiguration = jwtConfiguration;
         _tokenValidationParameters = tokenValidationParameters;
-        _userManager = userManager;
+        _userManagerWrapper = userManagerWrapper;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    
+
     public async Task<TokenResponse> GenerateToken(IdentityUser user)
     {
         _logger.LogInformation("Attempt to create token for {Email}", user.Email);
@@ -38,18 +40,18 @@ public class TokenHandler : ITokenHandler
 
         var claims = new List<Claim>
         {
-            new (JwtClaimNames.Sub, user.UserName),
-            new (JwtClaimNames.Jti, Guid.NewGuid().ToString()),
-            new (JwtClaimNames.Email, user.Email),
-            new (JwtClaimNames.UserId, user.Id),
-            new (ClaimTypes.Role, RoleNames.User)
+            new(JwtClaimNames.Sub, user.UserName),
+            new(JwtClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtClaimNames.Email, user.Email),
+            new(JwtClaimNames.UserId, user.Id),
+            new(ClaimTypes.Role, RoleNames.User)
         };
-        
-        if (await _userManager.IsInRoleAsync(user, RoleNames.Admin))
+
+        if (await _userManagerWrapper.IsInRoleAsync(user, RoleNames.Admin))
         {
             claims.Add(new Claim(ClaimTypes.Role, RoleNames.Admin));
         }
-        
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -80,8 +82,8 @@ public class TokenHandler : ITokenHandler
     {
         try
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var claimsPrincipal = tokenHandler.ValidateToken(token, _tokenValidationParameters, out var validatedToken);
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var claimsPrincipal = jwtSecurityTokenHandler.ValidateToken(token, _tokenValidationParameters, out var validatedToken);
             if (IsJwtWithValidSecurityAlgorithm(validatedToken))
             {
                 return claimsPrincipal;

@@ -1,12 +1,8 @@
-using FluentAssertions;
 using MediatR;
 using Notes.Api.Controllers;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Contracts.Identity;
-using NSubstitute;
-using NUnit.Framework;
 using TddXt.AnyRoot.Builder;
-using static TddXt.AnyRoot.Root;
 
 namespace Notes.Api.UnitTests.Controllers;
 

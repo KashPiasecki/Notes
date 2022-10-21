@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Notes.Application.Common.Interfaces.Handlers;
 using Notes.Application.Common.Interfaces.Repositories;
@@ -7,8 +6,6 @@ using Notes.Application.CQRS.Note.Queries.GetByUserId;
 using Notes.Application.UnitTests.TestsUtility.Mapper;
 using Notes.Domain.Contracts.Filters;
 using Notes.Domain.Contracts.Responses;
-using NSubstitute;
-using NUnit.Framework;
 using TddXt.AnyRoot.Collections;
 using TddXt.AnyRoot.Numbers;
 

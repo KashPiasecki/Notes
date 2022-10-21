@@ -6,32 +6,26 @@ namespace Notes.Infrastructure.Cache;
 
 public class ResponseCacheHandler : IResponseCacheHandler
 {
-    private readonly IJsonConverterWrapper _json;
-    private readonly IDistributedCache _distributedCache;
-
-
-    public ResponseCacheHandler(IJsonConverterWrapper json, IDistributedCache distributedCache)
+    private readonly IJsonConverterWrapper _jsonConverterWrapper;
+    private readonly IDistributedCacheWrapper _distributedCacheWrapper;
+    
+    public ResponseCacheHandler(IJsonConverterWrapper jsonConverterWrapper, IDistributedCacheWrapper distributedCacheWrapper)
     {
-        _json = json;
-        _distributedCache = distributedCache;
+        _jsonConverterWrapper = jsonConverterWrapper;
+        _distributedCacheWrapper = distributedCacheWrapper;
     }
 
     public async Task CacheResponseAsync(string cacheKey, object? response, TimeSpan timeToLive)
     {
-        if (response is null)
-        {
-            return;
-        }
-
-        var serializedResponse = _json.Serialize(response);
-        await _distributedCache.SetStringAsync(cacheKey, serializedResponse, new DistributedCacheEntryOptions()
+        if (response is null) return;
+        var serializedResponse = _jsonConverterWrapper.Serialize(response);
+        await _distributedCacheWrapper.SetStringAsync(cacheKey, serializedResponse, new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = timeToLive
         });
     }
 
-    public async Task<string> GetCachedResponseAsync(string cacheKey)
-    {
-        return await _distributedCache.GetStringAsync(cacheKey);
-    }
+    public async Task<string> GetCachedResponseAsync(string cacheKey) => 
+        await _distributedCacheWrapper.GetStringAsync(cacheKey);
+    
 }
