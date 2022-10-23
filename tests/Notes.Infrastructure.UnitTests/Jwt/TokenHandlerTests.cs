@@ -22,7 +22,7 @@ public class TokenHandlerTests
 
         var tokenHandler = new TokenHandler(
             Any.Instance<JwtConfiguration>()
-                .WithProperty(x => x.TokenLifetime, Any.Instance<TimeSpan>().ToString()),
+                .WithProperty(x => x.TokenLifetime, TimeSpan.FromHours(1).ToString()),
             Any.Instance<TokenValidationParameters>(),
             userManagerWrapper,
             Any.Instance<IUnitOfWork>(),
@@ -51,7 +51,7 @@ public class TokenHandlerTests
 
         var tokenHandler = new TokenHandler(
             Any.Instance<JwtConfiguration>()
-                .WithProperty(x => x.TokenLifetime, Any.Instance<TimeSpan>().ToString()),
+                .WithProperty(x => x.TokenLifetime, TimeSpan.FromHours(1).ToString()),
             Any.Instance<TokenValidationParameters>(),
             userManagerWrapper,
             Any.Instance<IUnitOfWork>(),
@@ -76,7 +76,7 @@ public class TokenHandlerTests
 
         var tokenHandler = new TokenHandler(
             Any.Instance<JwtConfiguration>()
-                .WithProperty(x => x.TokenLifetime, Any.Instance<TimeSpan>().ToString()),
+                .WithProperty(x => x.TokenLifetime, TimeSpan.FromHours(1).ToString()),
             Any.Instance<TokenValidationParameters>(),
             userManagerWrapper,
             Any.Instance<IUnitOfWork>(),
@@ -104,7 +104,7 @@ public class TokenHandlerTests
 
         var tokenHandler = new TokenHandler(
             Any.Instance<JwtConfiguration>()
-                .WithProperty(x => x.TokenLifetime, Any.Instance<TimeSpan>().ToString()),
+                .WithProperty(x => x.TokenLifetime, TimeSpan.FromHours(1).ToString()),
             Any.Instance<TokenValidationParameters>(),
             Any.Instance<IUserManagerWrapper>(),
             unitOfWork,
@@ -125,7 +125,7 @@ public class TokenHandlerTests
         // Arrange
         var tokenHandler = new TokenHandler(
             Any.Instance<JwtConfiguration>()
-                .WithProperty(x => x.TokenLifetime, Any.Instance<TimeSpan>().ToString()),
+                .WithProperty(x => x.TokenLifetime, TimeSpan.FromHours(1).ToString()),
             Any.Instance<TokenValidationParameters>(),
             Any.Instance<IUserManagerWrapper>(),
             Any.Instance<IUnitOfWork>(),
