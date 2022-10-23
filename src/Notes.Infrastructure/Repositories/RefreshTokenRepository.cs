@@ -12,9 +12,9 @@ public class RefreshTokenRepository : BaseRepository, IRefreshTokenRepository
     }
 
     public async Task<RefreshToken?> GetAsync(string refreshToken, CancellationToken cancellationToken) =>
-        await DataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token.Equals(refreshToken), cancellationToken: cancellationToken);
+        await DataContext.RefreshTokens.SingleOrDefaultAsync(x => x.Token.Equals(refreshToken), cancellationToken);
 
-    public void UpdateAsync(RefreshToken storedRefreshToken) =>
+    public void Update(RefreshToken storedRefreshToken) =>
         DataContext.RefreshTokens.Update(storedRefreshToken);
 
     public async Task AddAsync(RefreshToken refreshToken) =>

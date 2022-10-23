@@ -9,6 +9,7 @@ using Notes.Domain.Contracts.Identity;
 using Notes.Domain.Contracts.Responses;
 using NSubstitute.ReturnsExtensions;
 using TddXt.AnyRoot.Builder;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Identity.Commands;
 
@@ -30,7 +31,7 @@ public class RegisterUserCommandTests
         userManagerWrapper.FindByEmailAsync(registerUserCommand.Email).Returns(Any.Instance<IdentityUser>());
 
         // Act
-        var result = (AuthenticationFailedResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationFailedResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeFalse();
@@ -57,7 +58,7 @@ public class RegisterUserCommandTests
             .WithProperty(x => x.Succeeded, false));
 
         // Act
-        var result = (AuthenticationFailedResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationFailedResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeFalse();
@@ -84,7 +85,7 @@ public class RegisterUserCommandTests
             .WithProperty(x => x.Succeeded, true));
 
         // Act
-        await registerUserCommandHandler.Handle(registerUserCommand, Any.Instance<CancellationToken>());
+        await registerUserCommandHandler.Handle(registerUserCommand, Any.CancellationToken());
 
         // Assert
         await userManagerWrapper.DidNotReceive().AddToRoleAsync(Arg.Any<IdentityUser>(), RoleNames.Admin);
@@ -111,7 +112,7 @@ public class RegisterUserCommandTests
             .WithProperty(x => x.Succeeded, true));
 
         // Act
-        await registerUserCommandHandler.Handle(registerUserCommand, Any.Instance<CancellationToken>());
+        await registerUserCommandHandler.Handle(registerUserCommand, Any.CancellationToken());
 
         // Assert
         await userManagerWrapper.Received(1).AddToRoleAsync(identityUser, RoleNames.Admin);
@@ -141,7 +142,7 @@ public class RegisterUserCommandTests
         tokenHandler.GenerateToken(identityUser).Returns(tokenResponse);
 
         // Act
-        var result = (AuthenticationSuccessResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationSuccessResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.CancellationToken());
 
         // Assert
         await userManagerWrapper.Received(1).AddToRoleAsync(identityUser, RoleNames.Admin);
@@ -174,7 +175,7 @@ public class RegisterUserCommandTests
         tokenHandler.GenerateToken(identityUser).Returns(tokenResponse);
 
         // Act
-        var result = (AuthenticationSuccessResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationSuccessResult)await registerUserCommandHandler.Handle(registerUserCommand, Any.CancellationToken());
 
         // Assert
         await userManagerWrapper.DidNotReceive().AddToRoleAsync(Arg.Any<IdentityUser>(), RoleNames.Admin);

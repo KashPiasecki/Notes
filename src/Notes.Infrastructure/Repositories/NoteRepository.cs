@@ -13,10 +13,6 @@ public class NoteRepository : BaseRepository, INoteRepository
     {
     }
 
-    public async Task<Note?> GetNoteByIdAsync(Guid noteId, CancellationToken cancellationToken)
-    {
-        return await DataContext.Notes.SingleOrDefaultAsync(x => x.Id == noteId, cancellationToken: cancellationToken);
-    }
 
     public async Task<IEnumerable<Note>> GetAllAsync(PaginationFilter paginationFilter, NoteFilterQuery noteFilterQuery,
         CancellationToken cancellationToken)
@@ -27,6 +23,20 @@ public class NoteRepository : BaseRepository, INoteRepository
             .Skip((paginationFilter.PageNumber - 1) * paginationFilter.PageSize)
             .Take(paginationFilter.PageSize)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Note?> GetByIdAsync(Guid noteId, CancellationToken cancellationToken)
+    {
+        return await DataContext.Notes
+            .Include(x => x.User)
+            .SingleOrDefaultAsync(x => x.Id.Equals(noteId), cancellationToken);
+    }
+
+    public async Task<Note?> GetByIdForUserAsync(string userId, Guid noteId, CancellationToken cancellationToken)
+    {
+        return await DataContext.Notes
+            .Include(x => x.User)
+            .SingleOrDefaultAsync(x => x.UserId.Equals(userId) && x.Id == noteId, cancellationToken);
     }
 
     public async Task<int> CountAsync(NoteFilterQuery noteFilterQuery, CancellationToken cancellationToken)
@@ -65,22 +75,6 @@ public class NoteRepository : BaseRepository, INoteRepository
             .CountAsync(cancellationToken);
     }
 
-    public async Task<Note> AddAsync(Note note, CancellationToken cancellationToken)
-    {
-        return (await DataContext.Notes.AddAsync(note, cancellationToken)).Entity;
-    }
-
-    public async Task<Note?> GetByIdForUserAsync(string userId, Guid noteId, CancellationToken cancellationToken)
-    {
-        return await DataContext.Notes
-            .Include(x => x.User)
-            .SingleOrDefaultAsync(x => x.UserId.Equals(userId) && x.Id == noteId, cancellationToken);
-    }
-
-    public async Task<Note?> GetByIdAsync(Guid noteId, CancellationToken cancellationToken)
-    {
-        return await DataContext.Notes
-            .Include(x => x.User)
-            .SingleOrDefaultAsync(x => x.Id.Equals(noteId), cancellationToken);
-    }
+    public async Task<Note> AddAsync(Note note, CancellationToken cancellationToken) =>
+        (await DataContext.Notes.AddAsync(note, cancellationToken)).Entity;
 }

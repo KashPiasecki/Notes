@@ -68,7 +68,7 @@ public class RefreshTokenCommandHandler : BaseHandler<RefreshTokenCommandHandler
         }
 
         storedRefreshToken.Used = true;
-        UnitOfWork.RefreshTokens.UpdateAsync(storedRefreshToken);
+        UnitOfWork.RefreshTokens.Update(storedRefreshToken);
         await UnitOfWork.SaveChangesAsync(cancellationToken);
 
         var userId = _claimsPrincipalInfoProvider.GetUserId(validatedToken);

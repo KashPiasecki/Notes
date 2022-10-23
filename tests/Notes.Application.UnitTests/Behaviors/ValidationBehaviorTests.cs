@@ -4,6 +4,7 @@ using Notes.Application.Common.Exceptions;
 using Notes.Application.UnitTests.TestsUtility.Behaviors;
 using TddXt.AnyRoot.Builder;
 using TddXt.AnyRoot.Collections;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.Behaviors;
 
@@ -18,7 +19,7 @@ public class ValidationBehaviorTests
 
         var validationBehavior = new ValidationBehavior<TestValidationEntity, Unit>(validators);
         // Act
-        await validationBehavior.Handle(Any.Instance<TestValidationEntity>(), Any.Instance<CancellationToken>(), requestHandlerDelegate);
+        await validationBehavior.Handle(Any.Instance<TestValidationEntity>(), Any.CancellationToken(), requestHandlerDelegate);
 
         // Assert
         await requestHandlerDelegate.Received(1).Invoke();
@@ -35,7 +36,7 @@ public class ValidationBehaviorTests
         var testValidationEntity = Any.Instance<TestValidationEntity>();
         
         // Act
-        await validationBehavior.Handle(testValidationEntity, Any.Instance<CancellationToken>(), requestHandlerDelegate);
+        await validationBehavior.Handle(testValidationEntity, Any.CancellationToken(), requestHandlerDelegate);
 
         // Assert
         await requestHandlerDelegate.Received(1).Invoke();
@@ -53,7 +54,7 @@ public class ValidationBehaviorTests
             .WithProperty(x => x.Test, string.Empty);
         
         // Act
-        Func<Task> act = () => validationBehavior.Handle(testValidationEntity, Any.Instance<CancellationToken>(), requestHandlerDelegate);
+        Func<Task> act = () => validationBehavior.Handle(testValidationEntity, Any.CancellationToken(), requestHandlerDelegate);
 
         // Assert
         await act.Should().ThrowAsync<ValidationException>();

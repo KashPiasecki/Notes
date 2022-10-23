@@ -3,6 +3,7 @@ using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Commands.Delete;
 using NSubstitute.ReturnsExtensions;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Commands.Delete;
 
@@ -18,7 +19,7 @@ public class DeleteNoteForUserCommandTests
 
         var deleteNoteForUserCommandHandler = new DeleteNoteForUserCommandHandler(unitOfWork, Any.Instance<ILogger<DeleteNoteForUserCommandHandler>>());
         var deleteNoteForUserCommand = Any.Instance<DeleteNoteForUserCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         noteRepository.GetByIdForUserAsync(deleteNoteForUserCommand.UserId!, deleteNoteForUserCommand.Id, cancellationToken).ReturnsNull();
 
         // Act 
@@ -39,7 +40,7 @@ public class DeleteNoteForUserCommandTests
 
         var deleteNoteForUserCommandHandler = new DeleteNoteForUserCommandHandler(unitOfWork, Any.Instance<ILogger<DeleteNoteForUserCommandHandler>>());
         var deleteNoteForUserCommand = Any.Instance<DeleteNoteForUserCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         var note = Any.Instance<Domain.Entities.Note>();
         noteRepository.GetByIdForUserAsync(deleteNoteForUserCommand.UserId!, deleteNoteForUserCommand.Id, cancellationToken).Returns(note);
 

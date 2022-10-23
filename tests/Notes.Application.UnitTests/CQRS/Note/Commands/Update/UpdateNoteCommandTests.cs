@@ -4,6 +4,7 @@ using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Commands.Update;
 using Notes.Application.UnitTests.TestsUtility.Mapper;
 using NSubstitute.ReturnsExtensions;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Commands.Update;
 
@@ -21,8 +22,8 @@ public class UpdateNoteCommandTests
 
         var updateNoteCommandHandler = new UpdateNoteCommandHandler(unitOfWork, mapper,Any.Instance<ILogger<UpdateNoteCommandHandler>>());
         var updateNoteCommand = Any.Instance<UpdateNoteCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
-        noteRepository.GetNoteByIdAsync(updateNoteCommand.Id, cancellationToken).ReturnsNull();
+        var cancellationToken = Any.CancellationToken();
+        noteRepository.GetByIdAsync(updateNoteCommand.Id, cancellationToken).ReturnsNull();
 
         // Act 
         Func<Task> act = () => updateNoteCommandHandler.Handle(updateNoteCommand, cancellationToken);
@@ -43,7 +44,7 @@ public class UpdateNoteCommandTests
 
         var updateNoteCommandHandler = new UpdateNoteCommandHandler(unitOfWork, mapper,Any.Instance<ILogger<UpdateNoteCommandHandler>>());
         var updateNoteCommand = Any.Instance<UpdateNoteCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         var note = Any.Instance<Domain.Entities.Note>();
         noteRepository.GetByIdAsync(updateNoteCommand.Id, cancellationToken).Returns(note);
 

@@ -3,6 +3,7 @@ using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Commands.Create;
 using Notes.Application.UnitTests.TestsUtility.Mapper;
 using TddXt.AnyRoot.Builder;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Commands.Create;
 
@@ -19,7 +20,7 @@ public class CreateNoteCommandTests
 
         var createNoteCommandHandler = new CreateNoteCommandHandler(unitOfWork, mapper, Any.Instance<ILogger<CreateNoteCommandHandler>>());
         var createNoteCommand = Any.Instance<CreateNoteCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         var note = Any.Instance<Domain.Entities.Note>()
             .WithProperty(x => x.Content, createNoteCommand.Content)
             .WithProperty(x => x.Title, createNoteCommand.Title)

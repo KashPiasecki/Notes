@@ -7,6 +7,7 @@ using Notes.Application.UnitTests.TestsUtility.Mapper;
 using Notes.Domain.Contracts.Filters;
 using Notes.Domain.Contracts.Responses;
 using TddXt.AnyRoot.Collections;
+using TddXt.AnyRoot.Invokable;
 using TddXt.AnyRoot.Numbers;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Queries.GetByUserId;
@@ -26,7 +27,7 @@ public class GetPagedNotesForUserQueryTests
         var getPagedNotesForUserQueryHandler =
             new GetPagedNotesForUserQueryHandler(unitOfWork, mapper, paginationHandler, Any.Instance<ILogger<GetPagedNotesForUserQueryHandler>>());
         var getPagedNotesForUserQuery = Any.Instance<GetPagedNotesForUserQuery>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         var paginationFilter = Any.Instance<PaginationFilter>();
         paginationHandler.ValidateQuery(getPagedNotesForUserQuery.PaginationFilterQuery).Returns(paginationFilter);
         noteRepository.GetAllForUserAsync(getPagedNotesForUserQuery.UserId, paginationFilter, getPagedNotesForUserQuery.NoteFilterQuery,

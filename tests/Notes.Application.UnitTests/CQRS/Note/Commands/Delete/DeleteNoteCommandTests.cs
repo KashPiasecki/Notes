@@ -3,6 +3,7 @@ using Notes.Application.Common.Exceptions;
 using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Commands.Delete;
 using NSubstitute.ReturnsExtensions;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Commands.Delete;
 
@@ -18,8 +19,8 @@ public class DeleteNoteCommandTests
 
         var deleteNoteCommandHandler = new DeleteNoteCommandHandler(unitOfWork, Any.Instance<ILogger<DeleteNoteCommandHandler>>());
         var deleteNoteCommand = Any.Instance<DeleteNoteCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
-        noteRepository.GetNoteByIdAsync(deleteNoteCommand.Id, cancellationToken).ReturnsNull();
+        var cancellationToken = Any.CancellationToken();
+        noteRepository.GetByIdAsync(deleteNoteCommand.Id, cancellationToken).ReturnsNull();
 
         // Act 
         Func<Task> act = () => deleteNoteCommandHandler.Handle(deleteNoteCommand, cancellationToken);
@@ -39,9 +40,9 @@ public class DeleteNoteCommandTests
 
         var deleteNoteCommandHandler = new DeleteNoteCommandHandler(unitOfWork, Any.Instance<ILogger<DeleteNoteCommandHandler>>());
         var deleteNoteCommand = Any.Instance<DeleteNoteCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         var note = Any.Instance<Domain.Entities.Note>();
-        noteRepository.GetNoteByIdAsync(deleteNoteCommand.Id, cancellationToken).Returns(note);
+        noteRepository.GetByIdAsync(deleteNoteCommand.Id, cancellationToken).Returns(note);
 
         // Act 
         await deleteNoteCommandHandler.Handle(deleteNoteCommand, cancellationToken);

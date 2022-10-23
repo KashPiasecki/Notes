@@ -9,6 +9,7 @@ using Notes.Domain.Contracts.Responses;
 using Notes.Domain.Entities;
 using NSubstitute.ReturnsExtensions;
 using TddXt.AnyRoot.Builder;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Identity.Commands;
 
@@ -29,7 +30,7 @@ public class LoginUserCommandTests
         userManagerWrapper.FindByEmailAsync(loginUserCommand.Email).ReturnsNull();
 
         // Act
-        var result = (AuthenticationFailedResult)await loginUserCommandHandler.Handle(loginUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationFailedResult)await loginUserCommandHandler.Handle(loginUserCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeFalse();
@@ -53,7 +54,7 @@ public class LoginUserCommandTests
         userManagerWrapper.CheckPasswordAsync(user, loginUserCommand.Password).Returns(false);
 
         // Act
-        var result = (AuthenticationFailedResult)await loginUserCommandHandler.Handle(loginUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationFailedResult)await loginUserCommandHandler.Handle(loginUserCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeFalse();
@@ -81,7 +82,7 @@ public class LoginUserCommandTests
         tokenHandler.GenerateToken(user).Returns(token);
         
         // Act
-        var result = (AuthenticationSuccessResult)await loginUserCommandHandler.Handle(loginUserCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationSuccessResult)await loginUserCommandHandler.Handle(loginUserCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeTrue();

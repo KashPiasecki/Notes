@@ -4,6 +4,7 @@ using Notes.Application.Common.Interfaces.Repositories;
 using Notes.Application.CQRS.Note.Queries.GetById;
 using Notes.Application.UnitTests.TestsUtility.Mapper;
 using NSubstitute.ReturnsExtensions;
+using TddXt.AnyRoot.Invokable;
 
 namespace Notes.Application.UnitTests.CQRS.Note.Queries.GetById;
 
@@ -20,8 +21,8 @@ public class GetNoteByIdQueryTests
 
         var getNoteByIdQueryHandler = new GetNoteByIdQueryHandler(unitOfWork, mapper,Any.Instance<ILogger<GetNoteByIdQueryHandler>>());
         var getNoteByIdQuery = Any.Instance<GetNoteByIdQuery>();
-        var cancellationToken = Any.Instance<CancellationToken>();
-        noteRepository.GetNoteByIdAsync(getNoteByIdQuery.Id, cancellationToken).ReturnsNull();
+        var cancellationToken = Any.CancellationToken();
+        noteRepository.GetByIdAsync(getNoteByIdQuery.Id, cancellationToken).ReturnsNull();
 
         // Act 
         Func<Task> act = () => getNoteByIdQueryHandler.Handle(getNoteByIdQuery, cancellationToken);
@@ -43,7 +44,7 @@ public class GetNoteByIdQueryTests
 
         var getNoteByIdQueryHandler = new GetNoteByIdQueryHandler(unitOfWork, mapper,Any.Instance<ILogger<GetNoteByIdQueryHandler>>());
         var getNoteByIdQuery = Any.Instance<GetNoteByIdQuery>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
         var note = Any.Instance<Domain.Entities.Note>();
         noteRepository.GetByIdAsync(getNoteByIdQuery.Id, cancellationToken).Returns(note);
 

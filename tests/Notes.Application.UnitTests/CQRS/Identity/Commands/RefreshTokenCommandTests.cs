@@ -11,6 +11,7 @@ using Notes.Domain.Contracts.Responses;
 using Notes.Domain.Entities;
 using NSubstitute.ReturnsExtensions;
 using TddXt.AnyRoot.Builder;
+using TddXt.AnyRoot.Invokable;
 using TddXt.AnyRoot.Strings;
 
 namespace Notes.Application.UnitTests.CQRS.Identity.Commands;
@@ -33,7 +34,7 @@ public class RefreshTokenCommandTests
         tokenHandler.GetPrincipalFromToken(refreshTokenCommand.Token).ReturnsNull();
 
         // Act
-        var result = (AuthenticationFailedResult)await refreshTokenCommandHandler.Handle(refreshTokenCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationFailedResult)await refreshTokenCommandHandler.Handle(refreshTokenCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeFalse();
@@ -59,7 +60,7 @@ public class RefreshTokenCommandTests
         claimsPrincipalInfoProvider.GetExpiryTime(validatedToken).Returns(DateTime.MaxValue);
 
         // Act
-        var result = (AuthenticationFailedResult)await refreshTokenCommandHandler.Handle(refreshTokenCommand, Any.Instance<CancellationToken>());
+        var result = (AuthenticationFailedResult)await refreshTokenCommandHandler.Handle(refreshTokenCommand, Any.CancellationToken());
 
         // Assert
         result.Success.Should().BeFalse();
@@ -77,7 +78,7 @@ public class RefreshTokenCommandTests
         var claimsPrincipalInfoProvider = Substitute.For<IClaimsPrincipalInfoProvider>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,
@@ -109,7 +110,7 @@ public class RefreshTokenCommandTests
         var claimsPrincipalInfoProvider = Substitute.For<IClaimsPrincipalInfoProvider>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,
@@ -141,7 +142,7 @@ public class RefreshTokenCommandTests
         var claimsPrincipalInfoProvider = Substitute.For<IClaimsPrincipalInfoProvider>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,
@@ -176,7 +177,7 @@ public class RefreshTokenCommandTests
         var claimsPrincipalInfoProvider = Substitute.For<IClaimsPrincipalInfoProvider>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,
@@ -212,7 +213,7 @@ public class RefreshTokenCommandTests
         var claimsPrincipalInfoProvider = Substitute.For<IClaimsPrincipalInfoProvider>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,
@@ -251,7 +252,7 @@ public class RefreshTokenCommandTests
         var userManagerWrapper = Substitute.For<IUserManagerWrapper>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,
@@ -297,7 +298,7 @@ public class RefreshTokenCommandTests
         var userManagerWrapper = Substitute.For<IUserManagerWrapper>();
         var validatedToken = Any.Instance<ClaimsPrincipal>();
         var refreshTokenCommand = Any.Instance<RefreshTokenCommand>();
-        var cancellationToken = Any.Instance<CancellationToken>();
+        var cancellationToken = Any.CancellationToken();
 
         var refreshTokenCommandHandler = new RefreshTokenCommandHandler(
             unitOfWork,

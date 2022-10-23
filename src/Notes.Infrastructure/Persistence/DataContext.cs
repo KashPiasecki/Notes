@@ -7,9 +7,14 @@ namespace Notes.Infrastructure.Persistence;
 
 public class DataContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
-    public DbSet<Note> Notes { get; set; }
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public virtual DbSet<Note> Notes { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
+    public DataContext()
+    {
+        
+    }
+    
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }

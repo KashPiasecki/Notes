@@ -16,7 +16,7 @@ public class DeleteNoteCommandHandler : BaseHandler<DeleteNoteCommandHandler>, I
     public async Task<Unit> Handle(DeleteNoteCommand request, CancellationToken cancellationToken)
     {
         Logger.LogInformation("Request to delete note {NoteId}", request.Id);
-        var note = await UnitOfWork.Notes.GetNoteByIdAsync(request.Id, cancellationToken);
+        var note = await UnitOfWork.Notes.GetByIdAsync(request.Id, cancellationToken);
         if (note is null)
         {
             Logger.LogError("Failed to get note with id: {NoteId}", request.Id);
