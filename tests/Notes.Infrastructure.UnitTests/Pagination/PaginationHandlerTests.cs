@@ -73,7 +73,7 @@ public class PaginationHandlerTests
         result.Data.Should().BeEquivalentTo(tObject);
         result.PageNumber.Should().Be(paginationFilter.PageNumber);
         result.PageSize.Should().Be(paginationFilter.PageSize);
-        result.TotalPages.Should().Be(totalRecords / paginationFilter.PageSize +1);
+        result.TotalPages.Should().Be(RoundUp(totalRecords, paginationFilter.PageSize));
         result.TotalRecords.Should().Be(totalRecords);
         result.NextPage.Should().Be(null);
         result.PreviousPage.Should().Be(null);
@@ -104,11 +104,17 @@ public class PaginationHandlerTests
         result.Data.Should().BeEquivalentTo(tObject);
         result.PageNumber.Should().Be(paginationFilter.PageNumber);
         result.PageSize.Should().Be(paginationFilter.PageSize);
-        result.TotalPages.Should().Be(totalRecords / paginationFilter.PageSize +1);
+        result.TotalPages.Should().Be(RoundUp(totalRecords, paginationFilter.PageSize));
         result.TotalRecords.Should().Be(totalRecords);
         result.NextPage.Should().Be(validatedRoute);
         result.PreviousPage.Should().Be(validatedRoute);
         result.FirstPage.Should().Be(validatedRoute);
         result.LastPage.Should().Be(validatedRoute);
+    }
+
+    private static int RoundUp(int a, int b)
+    {
+        var roundedUp = Math.Ceiling((double)a / b);
+        return (int)roundedUp;
     }
 }
