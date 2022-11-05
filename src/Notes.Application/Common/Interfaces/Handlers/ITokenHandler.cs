@@ -8,5 +8,4 @@ public interface ITokenHandler
 {
     Task<TokenResponse> GenerateToken(IdentityUser user);
     ClaimsPrincipal? GetPrincipalFromToken(string token);
-    DateTime GetExpirationTime(long expiryDateUnix);
 }

@@ -99,13 +99,6 @@ public class TokenHandler : ITokenHandler
         }
     }
 
-    public DateTime GetExpirationTime(long expiryDateUnix)
-    {
-        var timezoneDifference = DateTime.Now.Subtract(DateTime.UtcNow);
-        var dateToExpire = DateTime.UnixEpoch.AddSeconds(expiryDateUnix);
-        return dateToExpire.Add(timezoneDifference);
-    }
-
     private static bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken) =>
         validatedToken is JwtSecurityToken jwtSecurityToken &&
         jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);

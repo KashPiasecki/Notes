@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Net.Mail;
 using AutoFixture;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Notes.Api.IntegrationTests.Utility;
 using Notes.Application.CQRS.Identity.Commands;
 using Notes.Domain.Contracts.Identity;
@@ -34,15 +35,16 @@ public class IdentityControllerTests : IntegrationTest
         var testPassword = Fixture.CreateValidPassword();
 
         // Act
-        var response = 
-            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(userName, testEmail, testPassword));
+        var response =
+            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register,
+                new RegisterUserCommand(userName, testEmail, testPassword));
         var registrationResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         registrationResponse?.Errors.Should().NotBeEmpty();
     }
-    
+
     [Test]
     public async Task Register_WithImproperEmail_ReturnsUnprocessableEntity()
     {
@@ -52,8 +54,9 @@ public class IdentityControllerTests : IntegrationTest
         var testPassword = Fixture.CreateValidPassword();
 
         // Act
-        var response = 
-            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
+        var response =
+            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register,
+                new RegisterUserCommand(testUsername, testEmail, testPassword));
         var registrationResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
 
         // Assert
@@ -73,13 +76,51 @@ public class IdentityControllerTests : IntegrationTest
         var testEmail = Fixture.Create<MailAddress>().ToString();
 
         // Act
-        var response = 
-            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, password));
+        var response =
+            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register,
+                new RegisterUserCommand(testUsername, testEmail, password));
         var registrationResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         registrationResponse?.Errors.Should().NotBeEmpty();
+    }
+
+    [Test]
+    public async Task RegisterAdmin_AsAdmin_CreatesAdmin()
+    {
+        // Arrange - Act
+        await AuthenticateAsync();
+        var testUsername = Fixture.Create<string>();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
+        var testPassword = Fixture.CreateValidPassword();
+
+        // Act
+        var registerAdminResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RegisterAdmin,
+            new RegisterUserCommand(testUsername, testEmail, testPassword));
+        var registerAdminResult = await registerAdminResponse.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
+
+        // Assert
+        registerAdminResult!.Token.Should().NotBeEmpty();
+        registerAdminResult.RefreshToken.Should().NotBeEmpty();
+    }
+
+    [Test]
+    public async Task RegisterAdmin_AsUser_403Forbidden()
+    {
+        // Arrange
+        await AuthenticateAsync();
+        await AuthenticateAsync();
+        var testUsername = Fixture.Create<string>();
+        var testEmail = Fixture.Create<MailAddress>().ToString();
+        var testPassword = Fixture.CreateValidPassword();
+        
+        // Act
+        var registerAdminResponse = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RegisterAdmin,
+            new RegisterUserCommand(testUsername, testEmail, testPassword));
+        
+        // Assert
+        registerAdminResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
     [Test]
@@ -89,10 +130,12 @@ public class IdentityControllerTests : IntegrationTest
         var testUsername = Fixture.Create<string>();
         var testEmail = Fixture.Create<MailAddress>().ToString();
         var testPassword = Fixture.CreateValidPassword();
-        await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new RegisterUserCommand(testUsername, testEmail, testPassword));
+        await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register,
+            new RegisterUserCommand(testUsername, testEmail, testPassword));
 
         // Act
-        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Login, new LoginUserCommand(testEmail, testPassword));
+        var response =
+            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Login, new LoginUserCommand(testEmail, testPassword));
         var loginResponse = await response.Content.ReadFromJsonAsync<AuthenticationSuccessResult>();
 
         // Assert
@@ -100,7 +143,7 @@ public class IdentityControllerTests : IntegrationTest
         loginResponse?.Token.Should().NotBeEmpty();
         loginResponse?.RefreshToken.Should().NotBeEmpty();
     }
-    
+
     [Test]
     public async Task Login_WithImproperCredentials_ReturnsBadRequest()
     {
@@ -109,7 +152,8 @@ public class IdentityControllerTests : IntegrationTest
         var testPassword = Fixture.CreateValidPassword();
 
         // Act
-        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Login, new LoginUserCommand(testEmail, testPassword));
+        var response =
+            await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Login, new LoginUserCommand(testEmail, testPassword));
         var loginResponse = await response.Content.ReadFromJsonAsync<AuthenticationFailedResult>();
 
         // Assert
@@ -121,7 +165,8 @@ public class IdentityControllerTests : IntegrationTest
     public async Task RefreshToken_WithImproperToken_ReturnsBadRequest()
     {
         // Arrange - Act
-        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RefreshToken, new RefreshTokenCommand(Fixture.Create<string>(), Fixture.Create<string>()));
+        var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.RefreshToken,
+            new RefreshTokenCommand(Fixture.Create<string>(), Fixture.Create<string>()));
         var refreshTokenResult = await response.Content.ReadFromJsonAsync<AuthenticationFailedResult>();
 
         // Assert

@@ -24,6 +24,7 @@ public static class ApiRoutes
     public static class Identity
     {
         public const string Register = $"{Base}/identity/register";
+        public const string RegisterAdmin = $"{Base}/identity/registerAdmin";
         public const string Login = $"{Base}/identity/login";
         public const string RefreshToken = $"{Base}/identity/refreshToken";
     }
