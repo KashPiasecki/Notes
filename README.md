@@ -36,3 +36,5 @@
 
 * Normally I would add `.env` file to gitignore but for testing simplicity these secrets are already filled
 * First user created will have admin role
+
+Testing Pull Request
