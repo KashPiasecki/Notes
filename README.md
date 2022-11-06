@@ -3,10 +3,10 @@
 ![Docker](https://camo.githubusercontent.com/b6cf3f3cd72b2b3af1f9656f7902845bb0c7adbbff83dbd52d57de9da8b912c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4275696c745f576974682d446f636b65722d696e666f726d6174696f6e616c3f7374796c653d666c6174266c6f676f3d646f636b6572)
 [![.NET](https://github.com/KashPiasecki/Notes/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/KashPiasecki/Notes/actions/workflows/ci.yaml)
 [![Scheduled Tests Run](https://github.com/KashPiasecki/Notes/actions/workflows/periodical.yaml/badge.svg)](https://github.com/KashPiasecki/Notes/actions/workflows/periodical.yaml)
-![CodeCoverage](https://img.shields.io/badge/CodeCoverage-96%25-green)
+![CodeCoverage](https://camo.githubusercontent.com/eb61226f25a9158784ff9e7ab1cf8e784bd0af6f98f8616bb309ae3fea4afcd2/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f436f6465253230436f7665726167652d39322532352d737563636573733f7374796c653d666c6174)
 
 # About #
-### This project was created to try out <b> .NET 6 StandardApi</b> clean architecture approach. Technologies/frameworks: ###
+### This project was created to try out <b>.NET 6 StandardApi</b> clean architecture approach and various technologies/frameworks. Used: ###
 * Serilog with Kibana logging platform ✅
 * Docker contenerization ✅
 * Postgres SQL with EntityFramework Core ORM ✅
@@ -34,5 +34,5 @@
 
 # Notes From Author # 
 
-* Normally I would add `.env` file to gitignore but for testing simplicity I filled these secrets
+* Normally I would add `.env` file to gitignore but for testing simplicity these secrets are already filled
 * First user created will have admin role
