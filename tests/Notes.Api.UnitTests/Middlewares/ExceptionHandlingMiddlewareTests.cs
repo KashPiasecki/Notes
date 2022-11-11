@@ -34,7 +34,8 @@ public class ExceptionHandlingMiddlewareTests
 
         // Assert
         defaultContext.Response.Body.Seek(0, SeekOrigin.Begin);
-        var body = await new StreamReader(defaultContext.Response.Body).ReadToEndAsync();
+        using var streamReader = new StreamReader(defaultContext.Response.Body);
+        var body = await streamReader.ReadToEndAsync();
         body.Should().Be(response);
     }
     

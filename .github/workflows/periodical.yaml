@@ -2,7 +2,7 @@ name: 'Scheduled Tests Run'
 
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 9 */11 * *'
 
 jobs:
   unitTest:
