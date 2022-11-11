@@ -9,7 +9,7 @@ public static class HttpClientExtensions
     {
         var serialized = JsonSerializer.Serialize(input);
         var uri = $"{httpClient.BaseAddress}{endpoint}";
-        var request = new HttpRequestMessage
+        using var request = new HttpRequestMessage
         {
             Method = new HttpMethod("DELETE"),
             RequestUri = new Uri(uri),
